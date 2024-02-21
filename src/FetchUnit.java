@@ -4,20 +4,33 @@ import java.util.List;
 public class FetchUnit implements Unit {
 
     public ArrayList<Instruction> instructions;
+
+    public boolean branchStall = false;
+
 //    public int programCounter;
 
     public DecodeUnit decodeUnit;
 
     public int fetch(int programCounter)
     {
-        if (programCounter >= instructions.size())
+        if (programCounter >= instructions.size() || branchStall)
         {
             return programCounter;
         }
 
-        decodeUnit.instructionsBuffer.add(instructions.get(programCounter));
+        Instruction fetched = instructions.get(programCounter);
 
-        programCounter++;
+        if (!(fetched.instructionUnit == "BranchUnit"))
+        {
+            programCounter++;
+        }
+        else
+        {
+            branchStall = true;
+        }
+
+        decodeUnit.instructionsBuffer.add(fetched.copyOf());
+
 
         return programCounter;
 

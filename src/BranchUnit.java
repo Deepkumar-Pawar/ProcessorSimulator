@@ -1,51 +1,53 @@
 import java.util.ArrayList;
 
-public class ArithmeticLogicUnit extends ExecutionUnit {
-
+public class BranchUnit extends ExecutionUnit{
     public RegisterFile registerFile;
     public WriteBackUnit writeBackUnit;
+    public FetchUnit fetchUnit;
 
-    public ArithmeticLogicUnit()
+    public BranchUnit()
     {
         instructionsBuffer = new ArrayList<>();
         instructions = new ArrayList<>();
         resultForwardingRegisters = new ArrayList<>();
     }
 
-    public void execute()
+    public int execute(int programCounter)
     {
+
+//        System.out.print(instructionsBuffer);
+//        System.out.println(instructions);
+
         if (!instructions.isEmpty())
         {
-            InstructionALU current = (InstructionALU) instructions.get(0);
-            
-            if (current.instructionType == "add")
+            ControlInstruction current = (ControlInstruction) instructions.get(0);
+
+//            System.out.println(current);
+
+            if (current.instructionType == "beq")
             {
                 if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
                 {
-                    add(current);
-                    
-                    current.executed = true;
-
-                    writeBackUnit.instructionsBuffer.add(current);
-
-                    instructions.remove(0);
-                }
-            }
-            else if (current.instructionType == "addi")
-            {
-                if(!checkDataDependency(current.op1))
-                {
-                    addi(current);
+                    beq(current);
 
                     current.executed = true;
 
-                    writeBackUnit.instructionsBuffer.add(current);
+                    fetchUnit.branchStall = false;
+
+                    int targetProgramCounter = current.targetProgramCounter;
+
+                    current.retired = true;
+
+//                    writeBackUnit.instructionsBuffer.add(current);
 
                     instructions.remove(0);
+
+                    if (current.taken)
+                    {
+                        programCounter = targetProgramCounter;
+                    }
                 }
             }
-            
-            
         }
 
 
@@ -57,35 +59,26 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
         }
 
         instructionsBuffer.clear();
+
+        return programCounter;
     }
 
-    public void add(InstructionALU instructionALU)
+    public void beq(ControlInstruction controlInstruction)
     {
-        int op1 = registerFile.registers.get(instructionALU.op1).getValue();
-        int op2 = registerFile.registers.get(instructionALU.op2).getValue();
+        int op1 = registerFile.registers.get(controlInstruction.op1).getValue();
+        int op2 = registerFile.registers.get(controlInstruction.op2).getValue();
 
-        int result = op1 + op2;
+        boolean taken = op1 == op2;
 
 //        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
 
-        instructionALU.result = result;
+        controlInstruction.taken = taken;
     }
 
-    public void addi(InstructionALU instructionALU)
-    {
-        int op1 = registerFile.registers.get(instructionALU.op1).getValue();
-        int op2 = instructionALU.op2;
-
-        int result = op1 + op2;
-
-//        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
-
-        instructionALU.result = result;
-    }
-
-    public void init (RegisterFile registerFile, WriteBackUnit writeBackUnit)
+    public void init (RegisterFile registerFile, FetchUnit fetchUnit, WriteBackUnit writeBackUnit)
     {
         this.registerFile = registerFile;
+        this.fetchUnit = fetchUnit;
         this.writeBackUnit = writeBackUnit;
     }
 

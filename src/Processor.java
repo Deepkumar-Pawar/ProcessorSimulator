@@ -10,6 +10,7 @@ public class Processor {
     public FetchUnit fetchUnit;
     public DecodeUnit decodeUnit;
     public ArithmeticLogicUnit alu;
+    public BranchUnit branchUnit;
     public WriteBackUnit writeBackUnit;
 
     public boolean running = false;
@@ -20,17 +21,19 @@ public class Processor {
 
         registerFile = new RegisterFile();
 
-        registerFile.registers.get(0).setValue(2);
-        registerFile.registers.get(1).setValue(3);
+//        registerFile.registers.get(0).setValue(2);
+//        registerFile.registers.get(1).setValue(3);
 
         fetchUnit = new FetchUnit();
         decodeUnit = new DecodeUnit();
         alu = new ArithmeticLogicUnit();
+        branchUnit = new BranchUnit();
         writeBackUnit = new WriteBackUnit();
 
         fetchUnit.init(decodeUnit);
-        decodeUnit.init(alu);
+        decodeUnit.init(alu, branchUnit);
         alu.init(registerFile, writeBackUnit);
+        branchUnit.init(registerFile, fetchUnit, writeBackUnit);
         writeBackUnit.init(registerFile);
 
     }
@@ -53,7 +56,7 @@ public class Processor {
 
         running = true;
 
-//        printInstructions(instructions);
+        printInstructions(instructions);
 
         if (!initialised)
         {
@@ -63,6 +66,7 @@ public class Processor {
         fetchUnit.giveInstructions(instructions);
 
         int endOfProgram = instructions.size()-1;
+//        System.out.println(endOfProgram);
 
         int cycles = 0;
 
@@ -70,7 +74,7 @@ public class Processor {
 
         while (running)
         {
-//            System.out.println(programCounter);
+            System.out.println(programCounter);
             tick();
             cycles++;
 
@@ -116,6 +120,8 @@ public class Processor {
         decodeUnit.decode();
 
         alu.execute();
+
+        programCounter = branchUnit.execute(programCounter);
 
         writeBackUnit.writeBack();
 
