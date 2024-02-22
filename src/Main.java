@@ -17,7 +17,6 @@ public class Main {
         Processor myProcessor = new Processor();
 
         myProcessor.start(instructions);
-
     }
 
     public static void readProgramFile()

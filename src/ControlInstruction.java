@@ -7,21 +7,24 @@ public class ControlInstruction extends Instruction{
 
     boolean taken;
 
+    boolean isJumpInstruction;
+
     String instructionType;
 
-    public ControlInstruction(int op1RN, int op2RN, String targetL, String instructionType)
+    public ControlInstruction(int op1RN, int op2RN, String targetL, String instructionType, boolean isJumpInstruction)
     {
         op1 = op1RN;
         op2 = op2RN;
         targetLabel = targetL;
         this.instructionType = instructionType;
+        this.isJumpInstruction = isJumpInstruction;
 
         instructionUnit = "BranchUnit";
     }
 
     @Override
     public Instruction copyOf() {
-        ControlInstruction copy = new ControlInstruction(op1, op2, targetLabel, instructionType);
+        ControlInstruction copy = new ControlInstruction(op1, op2, targetLabel, instructionType, isJumpInstruction);
 
         copy.retired = this.retired;
         copy.decoded = this.decoded;
@@ -29,7 +32,6 @@ public class ControlInstruction extends Instruction{
         copy.writtenBack = this.writtenBack;
         copy.instructionUnit = this.instructionUnit;
         copy.targetProgramCounter = this.targetProgramCounter;
-        copy.targetLabel = this.targetLabel;
 
         return copy;
     }

@@ -30,32 +30,55 @@ public class BranchUnit extends ExecutionUnit{
                 {
                     beq(current);
 
-                    current.executed = true;
+                    programCounter = branchExecute(current, programCounter);
+                }
+            }
+            else if (current.instructionType == "bne")
+            {
+                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                {
+                    bne(current);
 
-                    fetchUnit.branchStall = false;
+                    programCounter = branchExecute(current, programCounter);
+                }
+            }
+            else if (current.instructionType == "bgt")
+            {
+                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                {
+                    bgt(current);
 
-                    int targetProgramCounter = current.targetProgramCounter;
+                    programCounter = branchExecute(current, programCounter);
+                }
+            }
+            else if (current.instructionType == "bge")
+            {
+                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                {
+                    bge(current);
 
-                    current.retired = true;
+                    programCounter = branchExecute(current, programCounter);
+                }
+            }
+            else if (current.instructionType == "blt")
+            {
+                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                {
+                    blt(current);
 
-//                    writeBackUnit.instructionsBuffer.add(current);
+                    programCounter = branchExecute(current, programCounter);
+                }
+            }
+            else if (current.instructionType == "ble")
+            {
+                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                {
+                    ble(current);
 
-                    if (current.taken)
-                    {
-//                        System.out.println(targetProgramCounter);
-                        programCounter = targetProgramCounter;
-                    }
-                    else
-                    {
-                        programCounter++;
-                    }
-
-                    instructions.remove(0);
+                    programCounter = branchExecute(current, programCounter);
                 }
             }
         }
-
-
 
         //should place buffer instructions in the list of instructions to execute as the thing this unit does
         for (Instruction instruction: instructionsBuffer)
@@ -68,12 +91,99 @@ public class BranchUnit extends ExecutionUnit{
         return programCounter;
     }
 
+    public int branchExecute(ControlInstruction current, int programCounter)
+    {
+        current.executed = true;
+
+        fetchUnit.branchStall = false;
+
+        int targetProgramCounter = current.targetProgramCounter;
+
+        current.retired = true;
+
+//                    writeBackUnit.instructionsBuffer.add(current);
+
+        if (current.taken)
+        {
+//                        System.out.println(targetProgramCounter);
+            programCounter = targetProgramCounter;
+        }
+        else
+        {
+            programCounter++;
+        }
+
+        instructions.remove(0);
+
+        return programCounter;
+    }
+
     public void beq(ControlInstruction controlInstruction)
     {
         int op1 = registerFile.registers.get(controlInstruction.op1).getValue();
         int op2 = registerFile.registers.get(controlInstruction.op2).getValue();
 
         boolean taken = op1 == op2;
+
+//        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
+
+        controlInstruction.taken = taken;
+    }
+
+    public void bne(ControlInstruction controlInstruction)
+    {
+        int op1 = registerFile.registers.get(controlInstruction.op1).getValue();
+        int op2 = registerFile.registers.get(controlInstruction.op2).getValue();
+
+        boolean taken = op1 != op2;
+
+//        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
+
+        controlInstruction.taken = taken;
+    }
+
+    public void bgt(ControlInstruction controlInstruction)
+    {
+        int op1 = registerFile.registers.get(controlInstruction.op1).getValue();
+        int op2 = registerFile.registers.get(controlInstruction.op2).getValue();
+
+        boolean taken = op1 > op2;
+
+//        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
+
+        controlInstruction.taken = taken;
+    }
+
+    public void bge(ControlInstruction controlInstruction)
+    {
+        int op1 = registerFile.registers.get(controlInstruction.op1).getValue();
+        int op2 = registerFile.registers.get(controlInstruction.op2).getValue();
+
+        boolean taken = op1 >= op2;
+
+//        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
+
+        controlInstruction.taken = taken;
+    }
+
+    public void blt(ControlInstruction controlInstruction)
+    {
+        int op1 = registerFile.registers.get(controlInstruction.op1).getValue();
+        int op2 = registerFile.registers.get(controlInstruction.op2).getValue();
+
+        boolean taken = op1 < op2;
+
+//        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
+
+        controlInstruction.taken = taken;
+    }
+
+    public void ble(ControlInstruction controlInstruction)
+    {
+        int op1 = registerFile.registers.get(controlInstruction.op1).getValue();
+        int op2 = registerFile.registers.get(controlInstruction.op2).getValue();
+
+        boolean taken = op1 <= op2;
 
 //        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
 

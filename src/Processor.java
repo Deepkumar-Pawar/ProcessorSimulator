@@ -30,7 +30,7 @@ public class Processor {
         branchUnit = new BranchUnit();
         writeBackUnit = new WriteBackUnit();
 
-        fetchUnit.init(decodeUnit);
+        fetchUnit.init(decodeUnit, registerFile);
         decodeUnit.init(alu, branchUnit);
         alu.init(registerFile, writeBackUnit);
         branchUnit.init(registerFile, fetchUnit, writeBackUnit);
@@ -72,7 +72,7 @@ public class Processor {
 
         int i = 0;
 
-        int maxCycles = 30;
+        int maxCycles = 100;
 
         while (running)
         {
@@ -90,9 +90,9 @@ public class Processor {
 
 //            System.out.println("A cycle occurred");
 
-            if (programCounter > endOfProgram)
+            if (programCounter > endOfProgram || fetchUnit.exited)
             {
-                if (decodeUnit.instructions.isEmpty() && alu.instructions.isEmpty() && writeBackUnit.instructions.isEmpty())
+                if (decodeUnit.instructions.isEmpty() && alu.instructions.isEmpty() && branchUnit.instructions.isEmpty() && writeBackUnit.instructions.isEmpty())
                 {
                     if (decodeUnit.instructionsBuffer.isEmpty() && alu.instructionsBuffer.isEmpty() && writeBackUnit.instructionsBuffer.isEmpty()) {
                         running = false;
@@ -114,7 +114,7 @@ public class Processor {
 //        printInstructions(writeBackUnit.instructionsBuffer);
 
 
-//        printRegisterFile(registerFile);
+        printRegisterFile(registerFile);
 
     }
 
