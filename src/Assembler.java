@@ -13,7 +13,7 @@ public class Assembler {
 
         for (int i = 0; i < numInstructions; i++)
         {
-            if (rawInstructions.get(i) == "" || rawInstructions.get(i).startsWith("#"))
+            if (rawInstructions.get(i).strip() == "" || rawInstructions.get(i).strip().startsWith("#"))
             {
                 continue;
             }
@@ -35,6 +35,10 @@ public class Assembler {
             else if (parts[0].equals("addi"))
             {
                 instructions.add(new InstructionALU(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[1]), "addi"));
+            }
+            else if (parts[0].equals("mul"))
+            {
+                instructions.add(new InstructionALU(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[1]), "mul"));
             }
             else if (parts[0].equals("mod"))
             {

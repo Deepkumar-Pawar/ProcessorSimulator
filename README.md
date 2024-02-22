@@ -1,2 +1,2 @@
 # ProcessorSimulator
-Simulates a processor that is pipelined, super scalar and is able to execute instructions out of order.
+Simulates a processor that is pipelined, single scalar and executes instructions in order (at the moment).

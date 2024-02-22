@@ -72,7 +72,7 @@ public class Processor {
 
         int i = 0;
 
-        int maxCycles = 100;
+        int maxCycles = 500;
 
         while (running)
         {

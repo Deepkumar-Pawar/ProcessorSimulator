@@ -13,30 +13,31 @@ exit
 # GCD function
 gcd:
 
-# Initialize $2 to hold first integer from $0
-addi $2, $0, 0
+    # Initialize $2 to hold first integer from $0
+    addi $2, $0, 0
 
-# Initialize $3 to hold second integer from $1
-addi $3, $1, 0
+    # Initialize $3 to hold second integer from $1
+    addi $3, $1, 0
 
-gcd_loop:
+    gcd_loop:
 
-# Check if b is zero
-beq $3, $10, gcd_exit
+        # Check if b is zero
+        beq $3, $10, gcd_exit
 
-# Calculate remainder (a % b) and store it in $4
-mod $4, $2, $3
+        # Calculate remainder (a % b) and store it in $4
+        mod $4, $2, $3
 
-# Update a to b and b to remainder
-add $2, $30, $3
-add $3, $30, $4
+        # Update a to b and b to remainder
+        add $2, $30, $3
+        add $3, $30, $4
 
-# Repeat loop
-jb gcd_loop
+        # Repeat loop
+        jb gcd_loop
 
-gcd_exit:
-# Result is stored in $2, put it in $4
-add $4, $30, $2
+    gcd_exit:
 
-# Return to main
-jr $31
+        # Result is stored in $2, put it in $4
+        add $4, $30, $2
+
+    # Return to main
+    jr $31

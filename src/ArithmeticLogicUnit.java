@@ -45,6 +45,19 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
                     instructions.remove(0);
                 }
             }
+            else if (current.instructionType == "mul")
+            {
+                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                {
+                    mul(current);
+
+                    current.executed = true;
+
+                    writeBackUnit.instructionsBuffer.add(current);
+
+                    instructions.remove(0);
+                }
+            }
             else if (current.instructionType == "mod")
             {
                 if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
@@ -89,6 +102,18 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
         int op2 = instructionALU.op2;
 
         int result = op1 + op2;
+
+//        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
+
+        instructionALU.result = result;
+    }
+
+    public void mul(InstructionALU instructionALU)
+    {
+        int op1 = registerFile.registers.get(instructionALU.op1).getValue();
+        int op2 = registerFile.registers.get(instructionALU.op2).getValue();
+
+        int result = op1 * op2;
 
 //        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
 

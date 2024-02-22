@@ -1,0 +1,24 @@
+# Load the number into $0
+addi $0, $0, 7
+
+# Calculate factorial
+
+addi $1, $1, 1               # Initialize factorial to 1
+addi $2, $2, 1               # Initialize counter to 1
+
+factorial_loop:
+
+    # factorial *= counter
+    mul $1, $1, $2
+
+    # Increment counter
+    addi $2, $2, 1
+
+    # Repeat loop if counter <= number
+    ble $2, $0, factorial_loop
+
+# Store the factorial result in $4
+add $4, $4, $1
+
+# Exit program
+exit
