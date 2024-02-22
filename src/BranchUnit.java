@@ -40,12 +40,17 @@ public class BranchUnit extends ExecutionUnit{
 
 //                    writeBackUnit.instructionsBuffer.add(current);
 
-                    instructions.remove(0);
-
                     if (current.taken)
                     {
+//                        System.out.println(targetProgramCounter);
                         programCounter = targetProgramCounter;
                     }
+                    else
+                    {
+                        programCounter++;
+                    }
+
+                    instructions.remove(0);
                 }
             }
         }

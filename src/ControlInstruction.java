@@ -28,6 +28,8 @@ public class ControlInstruction extends Instruction{
         copy.executed = this.executed;
         copy.writtenBack = this.writtenBack;
         copy.instructionUnit = this.instructionUnit;
+        copy.targetProgramCounter = this.targetProgramCounter;
+        copy.targetLabel = this.targetLabel;
 
         return copy;
     }

@@ -56,7 +56,7 @@ public class Processor {
 
         running = true;
 
-        printInstructions(instructions);
+//        printInstructions(instructions);
 
         if (!initialised)
         {
@@ -72,14 +72,20 @@ public class Processor {
 
         int i = 0;
 
+        int maxCycles = 30;
+
         while (running)
         {
-            System.out.println(programCounter);
+//            System.out.println("Cycle " + cycles);
+
+//            printProcessorState();
+
             tick();
             cycles++;
 
             i++;
-            if (i >= 10)
+
+            if (i >= maxCycles)
                 running = false;
 
 //            System.out.println("A cycle occurred");
@@ -96,6 +102,7 @@ public class Processor {
         }
 
         System.out.println("cycles: " + cycles);
+//        printProcessorState();
         System.out.println("program counter at end: " + programCounter);
 
 //        printInstructions(decodeUnit.instructions);
@@ -107,7 +114,7 @@ public class Processor {
 //        printInstructions(writeBackUnit.instructionsBuffer);
 
 
-        printRegisterFile(registerFile);
+//        printRegisterFile(registerFile);
 
     }
 
@@ -142,14 +149,48 @@ public class Processor {
         System.out.println(instructions);
 //        for (Instruction instruction : instructions)
 //        {
-//            if (instruction.instructionUnit == "ALU")
+//            if (instruction.instructionUnit == "BranchUnit")
 //            {
-//                System.out.println(((InstructionALU) instruction).op1RegName);
-//                System.out.println(((InstructionALU) instruction).op2RegName);
+//                System.out.println(((ControlInstruction) instruction).op1);
+//                System.out.println(((InstructionALU) instruction).op2);
 //                System.out.println(((InstructionALU) instruction).destRegName);
 //                System.out.println(((InstructionALU) instruction).instructionType);
 //            }
 //        }
+    }
+
+    public void printProcessorState()
+    {
+        int registerNum = 4;
+        System.out.println("Register File: (name: value)");
+        for (int i = 0; i < registerNum; i++)
+        {
+            System.out.println(registerFile.registers.get(i).name + ": " + registerFile.registers.get(i).getValue());
+        }
+
+        System.out.println("FetchUnit");
+        if (fetchUnit.branchStall)
+        {
+            System.out.println("\tis currently stalled");
+        }
+        System.out.println("\tProgram Counter: " + programCounter);
+
+        System.out.println("DecodeUnit");
+        System.out.println("\tBuffer Instructions: " + decodeUnit.instructionsBuffer);
+        System.out.println("\tInstructions: " + decodeUnit.instructions);
+
+        System.out.println("ALU");
+        System.out.println("\tBuffer Instructions: " + alu.instructionsBuffer);
+        System.out.println("\tInstructions: " + alu.instructions);
+
+        System.out.println("BranchUnit");
+        System.out.println("\tBuffer Instructions: " + branchUnit.instructionsBuffer);
+        System.out.println("\tInstructions: " + branchUnit.instructions);
+
+        System.out.println("WriteBackUnit");
+        System.out.println("\tBuffer Instructions: " + writeBackUnit.instructionsBuffer);
+        System.out.println("\tInstructions: " + writeBackUnit.instructions);
+
     }
 
 }
