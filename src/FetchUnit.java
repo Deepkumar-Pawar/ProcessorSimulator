@@ -32,6 +32,12 @@ public class FetchUnit implements Unit {
         {
             if (((ControlInstruction) fetched).isJumpInstruction)
             {
+
+                if (ExecutionUnit.executeCycle(fetched))
+                {
+                    return programCounter;
+                }
+
                 programCounter = executeJumps(programCounter, (ControlInstruction) fetched);
                 return programCounter;
             }
@@ -64,28 +70,33 @@ public class FetchUnit implements Unit {
         this.instructions = new ArrayList<>(instructions);
     }
 
-    public int executeJumps(int pc, ControlInstruction instruction)
+    public int executeJumps(int pc, ControlInstruction instruction) //This function resets cyclesToExecute!!
     {
         if (instruction.instructionType == "j")
         {
+            instruction.cyclesToExecute = 1;
             return instruction.targetProgramCounter;
         }
         else if (instruction.instructionType == "jb")
         {
+            instruction.cyclesToExecute = 1;
             return instruction.targetProgramCounter;
         }
         else if(instruction.instructionType == "jr")
         {
+            instruction.cyclesToExecute = 1;
             instruction.targetProgramCounter = registerFile.registers.get(instruction.op1).getValue();
             return instruction.targetProgramCounter;
         }
         else if (instruction.instructionType == "jal" || instruction.instructionType == "jalb")
         {
+            instruction.cyclesToExecute = 1;
             registerFile.registers.get(31).setValue(pc+1);
             return instruction.targetProgramCounter;
         }
         else if (instruction.instructionType == "exit")
         {
+            instruction.cyclesToExecute = 1;
             exited = true;
         }
 

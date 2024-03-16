@@ -7,12 +7,13 @@ public class InstructionALU extends Instruction {
 
     String instructionType;
 
-    public InstructionALU(int op1RN, int op2RN, int destRN, String instructionType)
+    public InstructionALU(int op1RN, int op2RN, int destRN, String instructionType, int cyclesToExecute)
     {
         op1 = op1RN;
         op2 = op2RN;
         destRegName = destRN;
         this.instructionType = instructionType;
+        this.cyclesToExecute = cyclesToExecute;
 
         instructionUnit = "ALU";
     }
@@ -20,7 +21,7 @@ public class InstructionALU extends Instruction {
     @Override
     public Instruction copyOf()
     {
-        InstructionALU copy = new InstructionALU(op1, op2, destRegName, instructionType);
+        InstructionALU copy = new InstructionALU(op1, op2, destRegName, instructionType, cyclesToExecute);
 
         copy.retired = this.retired;
         copy.decoded = this.decoded;

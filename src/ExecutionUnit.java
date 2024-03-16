@@ -44,4 +44,18 @@ public class ExecutionUnit implements Unit{
         cleanForwardedResultRegisters(name);
         resultForwardingRegisters.add(new Register(name, value));
     }
+
+    public static boolean executeCycle(Instruction instruction)
+    {
+        instruction.cyclesToExecute--;
+
+        if (instruction.cyclesToExecute > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

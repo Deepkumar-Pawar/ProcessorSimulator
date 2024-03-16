@@ -65,6 +65,12 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
 
                 if(!hazardStall)
                 {
+
+                    if (executeCycle(current))
+                    {
+                        return;
+                    }
+
                     current.result = add(op1, op2);
                     
                     current.executed = true;
@@ -106,6 +112,12 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
 
                 if(!hazardStall)
                 {
+
+                    if (executeCycle(current))
+                    {
+                        return;
+                    }
+
                     current.result = addi(op1, op2);
 
                     current.executed = true;
@@ -165,6 +177,12 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
 
                 if(!hazardStall)
                 {
+
+                    if (executeCycle(current))
+                    {
+                        return;
+                    }
+
                     current.result = mul(op1, op2);
 
                     current.executed = true;
@@ -225,6 +243,12 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
 
                 if(!hazardStall)
                 {
+
+                    if (executeCycle(current))
+                    {
+                        return;
+                    }
+
                     current.result = mod(op1, op2);
 
                     current.executed = true;

@@ -22,6 +22,12 @@ public class BranchUnit extends ExecutionUnit{
         {
             ControlInstruction current = (ControlInstruction) instructions.get(0);
 
+            if (current.cyclesToExecute > 1)
+            {
+                current.cyclesToExecute--;
+                return programCounter;
+            }
+
 //            System.out.println(current);
 
             int forwarded1Index = checkForwardedResultRegisters(current.op1);
@@ -64,6 +70,14 @@ public class BranchUnit extends ExecutionUnit{
             }
             else {
                 hazardStall = true;
+            }
+
+            if (!hazardStall)
+            {
+                if (executeCycle(current))
+                {
+                    return programCounter;
+                }
             }
 
             if (current.instructionType == "beq")

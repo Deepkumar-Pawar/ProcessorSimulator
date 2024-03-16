@@ -11,20 +11,21 @@ public class ControlInstruction extends Instruction{
 
     String instructionType;
 
-    public ControlInstruction(int op1RN, int op2RN, String targetL, String instructionType, boolean isJumpInstruction)
+    public ControlInstruction(int op1RN, int op2RN, String targetL, String instructionType, boolean isJumpInstruction, int cyclesToExecute)
     {
         op1 = op1RN;
         op2 = op2RN;
         targetLabel = targetL;
         this.instructionType = instructionType;
         this.isJumpInstruction = isJumpInstruction;
+        this.cyclesToExecute = cyclesToExecute;
 
         instructionUnit = "BranchUnit";
     }
 
     @Override
     public Instruction copyOf() {
-        ControlInstruction copy = new ControlInstruction(op1, op2, targetLabel, instructionType, isJumpInstruction);
+        ControlInstruction copy = new ControlInstruction(op1, op2, targetLabel, instructionType, isJumpInstruction, cyclesToExecute);
 
         copy.retired = this.retired;
         copy.decoded = this.decoded;
