@@ -21,11 +21,58 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
             
             if (current.instructionType == "add")
             {
-                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                int forwarded1Index = checkForwardedResultRegisters(current.op1);
+                int forwarded2Index = checkForwardedResultRegisters(current.op2);
+
+                boolean hazardStall = false;
+
+                int op1 = 0, op2 = 0;
+
+                if (forwarded1Index != -1)
                 {
-                    add(current);
+                    op1 = resultForwardingRegisters.get(forwarded1Index).getValue();
+
+                    if (checkDataDependency(current.op1))
+                    {
+                        System.out.println("used forwarded register!!!!");
+                    }
+
+                }
+                else if (!checkDataDependency(current.op1))
+                {
+                    op1 = registerFile.registers.get(current.op1).getValue();
+                }
+                else {
+                    hazardStall = true;
+                }
+
+                if (forwarded2Index != -1)
+                {
+                    op2 = resultForwardingRegisters.get(forwarded2Index).getValue();
+
+                    if (checkDataDependency(current.op2))
+                    {
+                        System.out.println("used forwarded register!!!!");
+                    }
+                }
+                else if (!checkDataDependency(current.op2))
+                {
+                    op2 = registerFile.registers.get(current.op2).getValue();
+                }
+                else {
+                    hazardStall = true;
+                }
+
+                if(!hazardStall)
+                {
+                    current.result = add(op1, op2);
                     
                     current.executed = true;
+
+                    cleanForwardedResultRegisters(current.op1);
+                    cleanForwardedResultRegisters(current.op2);
+                    cleanForwardedResultRegisters(current.destRegName);
+                    addForwardedResultRegister(current.destRegName, current.result);
 
                     writeBackUnit.instructionsBuffer.add(current);
 
@@ -34,11 +81,38 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
             }
             else if (current.instructionType == "addi")
             {
-                if(!checkDataDependency(current.op1))
+                int forwarded1Index = checkForwardedResultRegisters(current.op1);
+
+                boolean hazardStall = false;
+
+                int op1 = 0, op2 = current.op2;
+
+                if (forwarded1Index != -1)
                 {
-                    addi(current);
+                    op1 = resultForwardingRegisters.get(forwarded1Index).getValue();
+
+                    if (checkDataDependency(current.op1))
+                    {
+                        System.out.println("used forwarded register!!!!");
+                    }
+                }
+                else if (!checkDataDependency(current.op1))
+                {
+                    op1 = registerFile.registers.get(current.op1).getValue();
+                }
+                else {
+                    hazardStall = true;
+                }
+
+                if(!hazardStall)
+                {
+                    current.result = addi(op1, op2);
 
                     current.executed = true;
+
+                    cleanForwardedResultRegisters(current.op1);
+                    cleanForwardedResultRegisters(current.destRegName);
+                    addForwardedResultRegister(current.destRegName, current.result);
 
                     writeBackUnit.instructionsBuffer.add(current);
 
@@ -47,11 +121,58 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
             }
             else if (current.instructionType == "mul")
             {
-                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                int forwarded1Index = checkForwardedResultRegisters(current.op1);
+                int forwarded2Index = checkForwardedResultRegisters(current.op2);
+
+                boolean hazardStall = false;
+
+                int op1 = 0, op2 = 0;
+
+                if (forwarded1Index != -1)
                 {
-                    mul(current);
+                    op1 = resultForwardingRegisters.get(forwarded1Index).getValue();
+
+                    if (checkDataDependency(current.op1))
+                    {
+                        System.out.println("used forwarded register!!!!");
+                    }
+
+                }
+                else if (!checkDataDependency(current.op1))
+                {
+                    op1 = registerFile.registers.get(current.op1).getValue();
+                }
+                else {
+                    hazardStall = true;
+                }
+
+                if (forwarded2Index != -1)
+                {
+                    op2 = resultForwardingRegisters.get(forwarded2Index).getValue();
+
+                    if (checkDataDependency(current.op2))
+                    {
+                        System.out.println("used forwarded register!!!!");
+                    }
+                }
+                else if (!checkDataDependency(current.op2))
+                {
+                    op2 = registerFile.registers.get(current.op2).getValue();
+                }
+                else {
+                    hazardStall = true;
+                }
+
+                if(!hazardStall)
+                {
+                    current.result = mul(op1, op2);
 
                     current.executed = true;
+
+                    cleanForwardedResultRegisters(current.op1);
+                    cleanForwardedResultRegisters(current.op2);
+                    cleanForwardedResultRegisters(current.destRegName);
+                    addForwardedResultRegister(current.destRegName, current.result);
 
                     writeBackUnit.instructionsBuffer.add(current);
 
@@ -60,11 +181,58 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
             }
             else if (current.instructionType == "mod")
             {
-                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                int forwarded1Index = checkForwardedResultRegisters(current.op1);
+                int forwarded2Index = checkForwardedResultRegisters(current.op2);
+
+                boolean hazardStall = false;
+
+                int op1 = 0, op2 = 0;
+
+                if (forwarded1Index != -1)
                 {
-                    mod(current);
+                    op1 = resultForwardingRegisters.get(forwarded1Index).getValue();
+
+                    if (checkDataDependency(current.op1))
+                    {
+                        System.out.println("used forwarded register!!!!");
+                    }
+
+                }
+                else if (!checkDataDependency(current.op1))
+                {
+                    op1 = registerFile.registers.get(current.op1).getValue();
+                }
+                else {
+                    hazardStall = true;
+                }
+
+                if (forwarded2Index != -1)
+                {
+                    op2 = resultForwardingRegisters.get(forwarded2Index).getValue();
+
+                    if (checkDataDependency(current.op2))
+                    {
+                        System.out.println("used forwarded register!!!!");
+                    }
+                }
+                else if (!checkDataDependency(current.op2))
+                {
+                    op2 = registerFile.registers.get(current.op2).getValue();
+                }
+                else {
+                    hazardStall = true;
+                }
+
+                if(!hazardStall)
+                {
+                    current.result = mod(op1, op2);
 
                     current.executed = true;
+
+                    cleanForwardedResultRegisters(current.op1);
+                    cleanForwardedResultRegisters(current.op2);
+                    cleanForwardedResultRegisters(current.destRegName);
+                    addForwardedResultRegister(current.destRegName, current.result);
 
                     writeBackUnit.instructionsBuffer.add(current);
 
@@ -84,52 +252,46 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
         instructionsBuffer.clear();
     }
 
-    public void add(InstructionALU instructionALU)
+    public int add(int op1, int op2)
     {
-        int op1 = registerFile.registers.get(instructionALU.op1).getValue();
-        int op2 = registerFile.registers.get(instructionALU.op2).getValue();
 
         int result = op1 + op2;
 
 //        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
 
-        instructionALU.result = result;
+//        instructionALU.result = result;
+        return result;
     }
 
-    public void addi(InstructionALU instructionALU)
+    public int addi(int op1, int op2)
     {
-        int op1 = registerFile.registers.get(instructionALU.op1).getValue();
-        int op2 = instructionALU.op2;
 
         int result = op1 + op2;
 
 //        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
 
-        instructionALU.result = result;
+        return result;
     }
 
-    public void mul(InstructionALU instructionALU)
+    public int mul(int op1, int op2)
     {
-        int op1 = registerFile.registers.get(instructionALU.op1).getValue();
-        int op2 = registerFile.registers.get(instructionALU.op2).getValue();
+
 
         int result = op1 * op2;
 
 //        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
 
-        instructionALU.result = result;
+        return result;
     }
 
-    public void mod(InstructionALU instructionALU)
+    public int mod(int op1, int op2)
     {
-        int op1 = registerFile.registers.get(instructionALU.op1).getValue();
-        int op2 = registerFile.registers.get(instructionALU.op2).getValue();
 
         int result = op1 % op2;
 
 //        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
 
-        instructionALU.result = result;
+        return result;
     }
 
     public void init (RegisterFile registerFile, WriteBackUnit writeBackUnit)
@@ -165,25 +327,25 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
         return false;
     }
 
-    public boolean checkForwardedResults(InstructionALU instruction)
-    {
-        boolean op1Forwarded = false;
-        boolean op2Forwarded = false;
-
-        for (Register register : resultForwardingRegisters)
-        {
-            if (register.name == instruction.op1)
-            {
-                op1Forwarded = true;
-            }
-
-            if (register.name == instruction.op2)
-            {
-                op2Forwarded = true;
-            }
-        }
-
-        return (op1Forwarded && op2Forwarded);
-    }
+//    public boolean checkForwardedResults(int op1, int op2)
+//    {
+//        boolean op1Forwarded = false;
+//        boolean op2Forwarded = false;
+//
+//        for (Register register : resultForwardingRegisters)
+//        {
+//            if (register.name == op1)
+//            {
+//                op1Forwarded = true;
+//            }
+//
+//            if (register.name == op2)
+//            {
+//                op2Forwarded = true;
+//            }
+//        }
+//
+//        return (op1Forwarded && op2Forwarded);
+//    }
 
 }

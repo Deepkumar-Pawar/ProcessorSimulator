@@ -77,7 +77,7 @@ public class Processor {
         while (running)
         {
 //            System.out.println("Cycle " + cycles);
-
+//
 //            printProcessorState();
 
             tick();
@@ -161,7 +161,7 @@ public class Processor {
 
     public void printProcessorState()
     {
-        int registerNum = 4;
+        int registerNum = 5;
         System.out.println("Register File: (name: value)");
         for (int i = 0; i < registerNum; i++)
         {

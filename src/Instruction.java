@@ -5,6 +5,8 @@ public abstract class Instruction {
     boolean executed = false;
     boolean writtenBack = false;
 
+    int cyclesToExecute;
+
     String instructionUnit = "";
 
     public abstract Instruction copyOf();

@@ -24,56 +24,116 @@ public class BranchUnit extends ExecutionUnit{
 
 //            System.out.println(current);
 
+            int forwarded1Index = checkForwardedResultRegisters(current.op1);
+            int forwarded2Index = checkForwardedResultRegisters(current.op2);
+
+            boolean hazardStall = false;
+
+            int op1 = 0, op2 = 0;
+
+            if (forwarded1Index != -1)
+            {
+                op1 = resultForwardingRegisters.get(forwarded1Index).getValue();
+
+                if (checkDataDependency(current.op1))
+                {
+                    System.out.println("used forwarded register!!!!");
+                }
+
+            }
+            else if (!checkDataDependency(current.op1))
+            {
+                op1 = registerFile.registers.get(current.op1).getValue();
+            }
+            else {
+                hazardStall = true;
+            }
+
+            if (forwarded2Index != -1)
+            {
+                op2 = resultForwardingRegisters.get(forwarded2Index).getValue();
+
+                if (checkDataDependency(current.op2))
+                {
+                    System.out.println("used forwarded register!!!!");
+                }
+            }
+            else if (!checkDataDependency(current.op2))
+            {
+                op2 = registerFile.registers.get(current.op2).getValue();
+            }
+            else {
+                hazardStall = true;
+            }
+
             if (current.instructionType == "beq")
             {
-                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                if(!hazardStall)
                 {
-                    beq(current);
+                    current.taken = beq(op1, op2);
+
+                    cleanForwardedResultRegisters(current.op1);
+                    cleanForwardedResultRegisters(current.op2);
 
                     programCounter = branchExecute(current, programCounter);
                 }
             }
             else if (current.instructionType == "bne")
             {
-                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                if(!hazardStall)
                 {
-                    bne(current);
+                    current.taken = bne(op1, op2);
+
+                    cleanForwardedResultRegisters(current.op1);
+                    cleanForwardedResultRegisters(current.op2);
 
                     programCounter = branchExecute(current, programCounter);
                 }
             }
             else if (current.instructionType == "bgt")
             {
-                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                if(!hazardStall)
                 {
-                    bgt(current);
+                    current.taken = bgt(op1, op2);
+
+                    cleanForwardedResultRegisters(current.op1);
+                    cleanForwardedResultRegisters(current.op2);
 
                     programCounter = branchExecute(current, programCounter);
                 }
             }
             else if (current.instructionType == "bge")
             {
-                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                if(!hazardStall)
                 {
-                    bge(current);
+                    current.taken = bge(op1, op2);
+
+                    cleanForwardedResultRegisters(current.op1);
+                    cleanForwardedResultRegisters(current.op2);
 
                     programCounter = branchExecute(current, programCounter);
                 }
             }
             else if (current.instructionType == "blt")
             {
-                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                if(!hazardStall)
                 {
-                    blt(current);
+                    current.taken = blt(op1, op2);
+
+                    cleanForwardedResultRegisters(current.op1);
+                    cleanForwardedResultRegisters(current.op2);
 
                     programCounter = branchExecute(current, programCounter);
                 }
             }
             else if (current.instructionType == "ble")
             {
-                if(!checkDataDependency(current.op1) && !checkDataDependency(current.op2))
+                if(!hazardStall)
                 {
-                    ble(current);
+                    current.taken = ble(op1, op2);
+
+                    cleanForwardedResultRegisters(current.op1);
+                    cleanForwardedResultRegisters(current.op2);
 
                     programCounter = branchExecute(current, programCounter);
                 }
@@ -118,76 +178,58 @@ public class BranchUnit extends ExecutionUnit{
         return programCounter;
     }
 
-    public void beq(ControlInstruction controlInstruction)
+    public boolean beq(int op1, int op2)
     {
-        int op1 = registerFile.registers.get(controlInstruction.op1).getValue();
-        int op2 = registerFile.registers.get(controlInstruction.op2).getValue();
-
         boolean taken = op1 == op2;
 
 //        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
 
-        controlInstruction.taken = taken;
+        return taken;
     }
 
-    public void bne(ControlInstruction controlInstruction)
+    public boolean bne(int op1, int op2)
     {
-        int op1 = registerFile.registers.get(controlInstruction.op1).getValue();
-        int op2 = registerFile.registers.get(controlInstruction.op2).getValue();
-
         boolean taken = op1 != op2;
 
 //        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
 
-        controlInstruction.taken = taken;
+        return taken;
     }
 
-    public void bgt(ControlInstruction controlInstruction)
+    public boolean bgt(int op1, int op2)
     {
-        int op1 = registerFile.registers.get(controlInstruction.op1).getValue();
-        int op2 = registerFile.registers.get(controlInstruction.op2).getValue();
-
         boolean taken = op1 > op2;
 
 //        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
 
-        controlInstruction.taken = taken;
+        return taken;
     }
 
-    public void bge(ControlInstruction controlInstruction)
+    public boolean bge(int op1, int op2)
     {
-        int op1 = registerFile.registers.get(controlInstruction.op1).getValue();
-        int op2 = registerFile.registers.get(controlInstruction.op2).getValue();
-
         boolean taken = op1 >= op2;
 
 //        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
 
-        controlInstruction.taken = taken;
+        return taken;
     }
 
-    public void blt(ControlInstruction controlInstruction)
+    public boolean blt(int op1, int op2)
     {
-        int op1 = registerFile.registers.get(controlInstruction.op1).getValue();
-        int op2 = registerFile.registers.get(controlInstruction.op2).getValue();
-
         boolean taken = op1 < op2;
 
 //        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
 
-        controlInstruction.taken = taken;
+        return taken;
     }
 
-    public void ble(ControlInstruction controlInstruction)
+    public boolean ble(int op1, int op2)
     {
-        int op1 = registerFile.registers.get(controlInstruction.op1).getValue();
-        int op2 = registerFile.registers.get(controlInstruction.op2).getValue();
-
         boolean taken = op1 <= op2;
 
 //        resultForwardingRegisters.add(new Register(instructionALU.destRegName));
 
-        controlInstruction.taken = taken;
+        return taken;
     }
 
     public void init (RegisterFile registerFile, FetchUnit fetchUnit, WriteBackUnit writeBackUnit)

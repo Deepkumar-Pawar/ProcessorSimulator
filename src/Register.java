@@ -8,6 +8,12 @@ public class Register {
         setValue(0);
     }
 
+    public Register(int name, int value)
+    {
+        this.name = name;
+        setValue(value);
+    }
+
     public int getValue() {
         return value;
     }
