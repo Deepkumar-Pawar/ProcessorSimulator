@@ -96,6 +96,18 @@ public class Assembler {
             {
                 instructions.add(new ControlInstruction(0, 0, "", "exit", true, 1));
             }
+            else if (parts[0].equals("lw"))
+            {
+                instructions.add(new LoadStoreInstruction(Integer.parseInt(parts[3]), Integer.parseInt(parts[2]), Integer.parseInt(parts[1]), "lw", 1));
+            }
+            else if (parts[0].equals("sw"))
+            {
+                instructions.add(new LoadStoreInstruction(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), "sw", 1));
+            }
+            else if (parts[0].equals("li"))
+            {
+                instructions.add(new LoadStoreInstruction(Integer.parseInt(parts[2]), 0, Integer.parseInt(parts[1]), "li", 1));
+            }
         }
 
 //        System.out.println(labelPCMapping);

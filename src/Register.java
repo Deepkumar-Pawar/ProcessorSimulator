@@ -1,4 +1,4 @@
-public class Register {
+public class Register implements MemoryUnit {
     int name;
     int value;
 

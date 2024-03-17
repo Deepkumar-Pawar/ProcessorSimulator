@@ -58,4 +58,31 @@ public class ExecutionUnit implements Unit{
             return false;
         }
     }
+
+    public boolean checkDataDependency(int opRegName, WriteBackUnit writeBackUnit)
+    {
+        for (Instruction instruction : writeBackUnit.instructionsBuffer)
+        {
+            if (instruction.instructionUnit == "ALU")
+            {
+                if (((InstructionALU) instruction).destRegName == opRegName)
+                {
+                    return true;
+                }
+            }
+        }
+
+        for (Instruction instruction : writeBackUnit.instructions)
+        {
+            if (instruction.instructionUnit == "ALU")
+            {
+                if (((InstructionALU) instruction).destRegName == opRegName)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

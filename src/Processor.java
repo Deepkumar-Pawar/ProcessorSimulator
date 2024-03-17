@@ -6,11 +6,14 @@ public class Processor {
     public boolean initialised = false;
 
     public RegisterFile registerFile;
+    public int memorySize = 100;
+    public Memory memory;
 
     public FetchUnit fetchUnit;
     public DecodeUnit decodeUnit;
     public ArithmeticLogicUnit alu;
     public BranchUnit branchUnit;
+    public LoadStoreUnit loadStoreUnit;
     public WriteBackUnit writeBackUnit;
 
     public boolean running = false;
@@ -20,6 +23,7 @@ public class Processor {
         //initialise processor related units and memory units etc
 
         registerFile = new RegisterFile();
+        memory = new Memory(memorySize);
 
 //        registerFile.registers.get(0).setValue(2);
 //        registerFile.registers.get(1).setValue(3);
@@ -28,12 +32,14 @@ public class Processor {
         decodeUnit = new DecodeUnit();
         alu = new ArithmeticLogicUnit();
         branchUnit = new BranchUnit();
+        loadStoreUnit = new LoadStoreUnit();
         writeBackUnit = new WriteBackUnit();
 
         fetchUnit.init(decodeUnit, registerFile);
-        decodeUnit.init(alu, branchUnit);
+        decodeUnit.init(alu, branchUnit, loadStoreUnit);
         alu.init(registerFile, writeBackUnit);
         branchUnit.init(registerFile, fetchUnit, writeBackUnit);
+        loadStoreUnit.init(registerFile, memory, writeBackUnit);
         writeBackUnit.init(registerFile);
 
     }
@@ -130,6 +136,8 @@ public class Processor {
 
         programCounter = branchUnit.execute(programCounter);
 
+        loadStoreUnit.execute();;
+
         writeBackUnit.writeBack();
 
     }
@@ -186,6 +194,10 @@ public class Processor {
         System.out.println("BranchUnit");
         System.out.println("\tBuffer Instructions: " + branchUnit.instructionsBuffer);
         System.out.println("\tInstructions: " + branchUnit.instructions);
+
+        System.out.println("LoadStoreUnit");
+        System.out.println("\tBuffer Instructions: " + loadStoreUnit.instructionsBuffer);
+        System.out.println("\tInstructions: " + loadStoreUnit.instructions);
 
         System.out.println("WriteBackUnit");
         System.out.println("\tBuffer Instructions: " + writeBackUnit.instructionsBuffer);

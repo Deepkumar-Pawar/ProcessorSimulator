@@ -7,6 +7,7 @@ public class DecodeUnit implements Unit {
 
     public ArithmeticLogicUnit alu;
     public BranchUnit branchUnit;
+    public LoadStoreUnit loadStoreUnit;
 
     public DecodeUnit()
     {
@@ -34,6 +35,11 @@ public class DecodeUnit implements Unit {
 //                System.out.println("decoder decoded a branch");
                 branchUnit.instructionsBuffer.add(current);
             }
+            else if (current.instructionUnit == "LoadStoreUnit")
+            {
+//                System.out.println("decoder decoded a branch");
+                loadStoreUnit.instructionsBuffer.add(current);
+            }
 
             current.decoded = true;
 
@@ -48,9 +54,10 @@ public class DecodeUnit implements Unit {
         instructionsBuffer.clear();
     }
 
-    public void init(ArithmeticLogicUnit alu, BranchUnit branchUnit)
+    public void init(ArithmeticLogicUnit alu, BranchUnit branchUnit, LoadStoreUnit loadStoreUnit)
     {
         this.alu = alu;
         this.branchUnit = branchUnit;
+        this.loadStoreUnit = loadStoreUnit;
     }
 }

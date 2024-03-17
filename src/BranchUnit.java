@@ -41,13 +41,13 @@ public class BranchUnit extends ExecutionUnit{
             {
                 op1 = resultForwardingRegisters.get(forwarded1Index).getValue();
 
-                if (checkDataDependency(current.op1))
+                if (checkDataDependency(current.op1, writeBackUnit))
                 {
                     System.out.println("used forwarded register!!!!");
                 }
 
             }
-            else if (!checkDataDependency(current.op1))
+            else if (!checkDataDependency(current.op1, writeBackUnit))
             {
                 op1 = registerFile.registers.get(current.op1).getValue();
             }
@@ -59,12 +59,12 @@ public class BranchUnit extends ExecutionUnit{
             {
                 op2 = resultForwardingRegisters.get(forwarded2Index).getValue();
 
-                if (checkDataDependency(current.op2))
+                if (checkDataDependency(current.op2, writeBackUnit))
                 {
                     System.out.println("used forwarded register!!!!");
                 }
             }
-            else if (!checkDataDependency(current.op2))
+            else if (!checkDataDependency(current.op2, writeBackUnit))
             {
                 op2 = registerFile.registers.get(current.op2).getValue();
             }
@@ -253,52 +253,52 @@ public class BranchUnit extends ExecutionUnit{
         this.writeBackUnit = writeBackUnit;
     }
 
-    public boolean checkDataDependency(int opRegName)
-    {
-        for (Instruction instruction : writeBackUnit.instructionsBuffer)
-        {
-            if (instruction.instructionUnit == "ALU")
-            {
-                if (((InstructionALU) instruction).destRegName == opRegName)
-                {
-                    return true;
-                }
-            }
-        }
+//    public boolean checkDataDependency(int opRegName)
+//    {
+//        for (Instruction instruction : writeBackUnit.instructionsBuffer)
+//        {
+//            if (instruction.instructionUnit == "ALU")
+//            {
+//                if (((InstructionALU) instruction).destRegName == opRegName)
+//                {
+//                    return true;
+//                }
+//            }
+//        }
+//
+//        for (Instruction instruction : writeBackUnit.instructions)
+//        {
+//            if (instruction.instructionUnit == "ALU")
+//            {
+//                if (((InstructionALU) instruction).destRegName == opRegName)
+//                {
+//                    return true;
+//                }
+//            }
+//        }
+//
+//        return false;
+//    }
 
-        for (Instruction instruction : writeBackUnit.instructions)
-        {
-            if (instruction.instructionUnit == "ALU")
-            {
-                if (((InstructionALU) instruction).destRegName == opRegName)
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    public boolean checkForwardedResults(InstructionALU instruction)
-    {
-        boolean op1Forwarded = false;
-        boolean op2Forwarded = false;
-
-        for (Register register : resultForwardingRegisters)
-        {
-            if (register.name == instruction.op1)
-            {
-                op1Forwarded = true;
-            }
-
-            if (register.name == instruction.op2)
-            {
-                op2Forwarded = true;
-            }
-        }
-
-        return (op1Forwarded && op2Forwarded);
-    }
+//    public boolean checkForwardedResults(InstructionALU instruction)
+//    {
+//        boolean op1Forwarded = false;
+//        boolean op2Forwarded = false;
+//
+//        for (Register register : resultForwardingRegisters)
+//        {
+//            if (register.name == instruction.op1)
+//            {
+//                op1Forwarded = true;
+//            }
+//
+//            if (register.name == instruction.op2)
+//            {
+//                op2Forwarded = true;
+//            }
+//        }
+//
+//        return (op1Forwarded && op2Forwarded);
+//    }
 
 }
