@@ -21,8 +21,8 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
             
             if (current.instructionType == "add")
             {
-                int forwarded1Index = checkForwardedResultRegisters(current.op1);
-                int forwarded2Index = checkForwardedResultRegisters(current.op2);
+                int forwarded1Index = -1; //checkForwardedResultRegisters(current.op1);
+                int forwarded2Index = -1; //checkForwardedResultRegisters(current.op2);
 
                 boolean hazardStall = false;
 
@@ -87,7 +87,7 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
             }
             else if (current.instructionType == "addi")
             {
-                int forwarded1Index = checkForwardedResultRegisters(current.op1);
+                int forwarded1Index = -1; checkForwardedResultRegisters(current.op1);
 
                 boolean hazardStall = false;
 
@@ -133,8 +133,8 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
             }
             else if (current.instructionType == "mul")
             {
-                int forwarded1Index = checkForwardedResultRegisters(current.op1);
-                int forwarded2Index = checkForwardedResultRegisters(current.op2);
+                int forwarded1Index = -1; checkForwardedResultRegisters(current.op1);
+                int forwarded2Index = -1; checkForwardedResultRegisters(current.op2);
 
                 boolean hazardStall = false;
 

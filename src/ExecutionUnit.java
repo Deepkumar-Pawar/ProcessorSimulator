@@ -9,15 +9,16 @@ public class ExecutionUnit implements Unit{
 
     public int checkForwardedResultRegisters(int regName)
     {
-        for (int i = 0; i < resultForwardingRegisters.size(); i++)
-        {
-            if (resultForwardingRegisters.get(i).name == regName)
-            {
-                return i;
-            }
-        }
-
         return -1;
+//        for (int i = 0; i < resultForwardingRegisters.size(); i++)
+//        {
+//            if (resultForwardingRegisters.get(i).name == regName)
+//            {
+//                return i;
+//            }
+//        }
+
+//        return -1;
     }
 
     public void cleanForwardedResultRegisters(int regName)

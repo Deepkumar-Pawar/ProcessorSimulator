@@ -15,6 +15,8 @@ public class FetchUnit implements Unit {
 
     public boolean exited;
 
+    public int instructionCounter;
+
     public int fetch(int programCounter)
     {
         if (programCounter >= instructions.size() || branchStall || exited)
@@ -23,6 +25,8 @@ public class FetchUnit implements Unit {
         }
 
         Instruction fetched = instructions.get(programCounter);
+        fetched.updateID(instructionCounter);
+        instructionCounter++;
 
         if (!(fetched.instructionUnit == "BranchUnit"))
         {

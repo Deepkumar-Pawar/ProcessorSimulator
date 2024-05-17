@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class DecodeUnit implements Unit {
 
@@ -8,6 +9,8 @@ public class DecodeUnit implements Unit {
     public ArithmeticLogicUnit alu;
     public BranchUnit branchUnit;
     public LoadStoreUnit loadStoreUnit;
+
+    public ROB rob;
 
     public DecodeUnit()
     {
@@ -19,6 +22,8 @@ public class DecodeUnit implements Unit {
     {
         //for instruction to decode, set as decoded and add it to appropriate execution unit
 
+        List<Integer> instructionDestRegs;
+
         if (!instructions.isEmpty())
         {
             Instruction current = instructions.get(0);
@@ -29,6 +34,7 @@ public class DecodeUnit implements Unit {
             {
                 alu.instructionsBuffer.add(current);
 //                System.out.println("decoder decoded an alu instruction");
+
             }
             else if (current.instructionUnit == "BranchUnit")
             {
@@ -40,6 +46,12 @@ public class DecodeUnit implements Unit {
 //                System.out.println("decoder decoded a branch");
                 loadStoreUnit.instructionsBuffer.add(current);
             }
+
+            //adding to ROB
+            instructionDestRegs = new ArrayList<>(current.destRegs);
+
+            rob.add(current, instructionDestRegs);
+            //
 
             current.decoded = true;
 
@@ -54,10 +66,12 @@ public class DecodeUnit implements Unit {
         instructionsBuffer.clear();
     }
 
-    public void init(ArithmeticLogicUnit alu, BranchUnit branchUnit, LoadStoreUnit loadStoreUnit)
+    public void init(ArithmeticLogicUnit alu, BranchUnit branchUnit, LoadStoreUnit loadStoreUnit, ROB rob)
     {
         this.alu = alu;
         this.branchUnit = branchUnit;
         this.loadStoreUnit = loadStoreUnit;
+        this.rob = rob;
+
     }
 }

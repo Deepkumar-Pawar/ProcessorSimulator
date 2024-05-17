@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class LoadStoreInstruction  extends Instruction{
     int op1;
     int op2;
@@ -14,6 +16,9 @@ public class LoadStoreInstruction  extends Instruction{
         this.cyclesToExecute = cyclesToExecute;
 
         instructionUnit = "LoadStoreUnit";
+
+        destRegs = new ArrayList<>();
+        destRegs.add(dest);
     }
 
     @Override

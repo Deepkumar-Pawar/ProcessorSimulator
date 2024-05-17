@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class InstructionALU extends Instruction {
     int op1;
     int op2;
@@ -16,6 +18,9 @@ public class InstructionALU extends Instruction {
         this.cyclesToExecute = cyclesToExecute;
 
         instructionUnit = "ALU";
+
+        destRegs = new ArrayList<>();
+        destRegs.add(destRN);
     }
 
     @Override

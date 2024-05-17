@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.ArrayList;
 
 public class Processor {
@@ -6,7 +7,7 @@ public class Processor {
     public boolean initialised = false;
 
     public RegisterFile registerFile;
-    public int memorySize = 100;
+    public int memorySize = 1000;
     public Memory memory;
 
     public FetchUnit fetchUnit;
@@ -35,8 +36,10 @@ public class Processor {
         loadStoreUnit = new LoadStoreUnit();
         writeBackUnit = new WriteBackUnit();
 
+        ROB rob = new ROB();
+
         fetchUnit.init(decodeUnit, registerFile);
-        decodeUnit.init(alu, branchUnit, loadStoreUnit);
+        decodeUnit.init(alu, branchUnit, loadStoreUnit, rob);
         alu.init(registerFile, writeBackUnit);
         branchUnit.init(registerFile, fetchUnit, writeBackUnit);
         loadStoreUnit.init(registerFile, memory, writeBackUnit);
@@ -78,7 +81,7 @@ public class Processor {
 
         int i = 0;
 
-        int maxCycles = 500;
+        int maxCycles = 10000;
 
         while (running)
         {
@@ -98,9 +101,9 @@ public class Processor {
 
             if (programCounter > endOfProgram || fetchUnit.exited)
             {
-                if (decodeUnit.instructions.isEmpty() && alu.instructions.isEmpty() && branchUnit.instructions.isEmpty() && writeBackUnit.instructions.isEmpty())
+                if (decodeUnit.instructions.isEmpty() && alu.instructions.isEmpty() && loadStoreUnit.instructions.isEmpty() && branchUnit.instructions.isEmpty() && writeBackUnit.instructions.isEmpty())
                 {
-                    if (decodeUnit.instructionsBuffer.isEmpty() && alu.instructionsBuffer.isEmpty() && writeBackUnit.instructionsBuffer.isEmpty()) {
+                    if (decodeUnit.instructionsBuffer.isEmpty() && alu.instructionsBuffer.isEmpty() && loadStoreUnit.instructionsBuffer.isEmpty() && writeBackUnit.instructionsBuffer.isEmpty()) {
                         running = false;
                     }
                 }
@@ -121,6 +124,7 @@ public class Processor {
 
 
         printRegisterFile(registerFile);
+        printMemory(memory);
 
     }
 
@@ -204,5 +208,44 @@ public class Processor {
         System.out.println("\tInstructions: " + writeBackUnit.instructions);
 
     }
+
+    public void printMemory(Memory memory)
+    {
+        List<Integer> memoryItems = new ArrayList<>();
+
+        int n = memory.size;
+
+        System.out.println();
+
+        for (int i = 0; i < n; i++)
+        {
+            memoryItems.add(memory.load(i));
+            System.out.print("("+ Integer.toString(i) + ":" + memoryItems.get(i).toString() + ")");
+            if (i <= 300) {
+                if ((isPrime(i) && memoryItems.get(i) == 0) || (!isPrime(i) && memoryItems.get(i) == 1)) {
+                    System.out.println(i + "WRONG" + memoryItems.get(i));
+                }
+            }
+
+        }
+        System.out.println();
+        System.out.println(memoryItems);
+
+    }
+
+    boolean isPrime(int num)
+    {
+        if(num<=1)
+        {
+            return false;
+        }
+        for(int i=2;i<=num/2;i++)
+        {
+            if((num%i)==0)
+                return  false;
+        }
+        return true;
+    }
+
 
 }
