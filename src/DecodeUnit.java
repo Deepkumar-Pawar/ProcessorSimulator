@@ -6,6 +6,8 @@ public class DecodeUnit implements Unit {
     public ArrayList<Instruction> instructionsBuffer;
     public ArrayList<Instruction> instructions;
 
+    public int limitedRSCounter = 0;
+
 //    public ArithmeticLogicUnit alu;
 //    public BranchUnit branchUnit;
 //    public LoadStoreUnit loadStoreUnit;
@@ -30,6 +32,8 @@ public class DecodeUnit implements Unit {
 
         List<Integer> instructionDestRegs;
 
+        boolean issued = true;
+
         if (!instructions.isEmpty())
         {
             Instruction current = instructions.get(0);
@@ -38,9 +42,19 @@ public class DecodeUnit implements Unit {
 
             if(current.instructionUnit == "ALU")
             {
-                aluInstructionsCounter++;
+                if (reservationStations.aluReservationStation.size() > reservationStations.aluRSLimit)
+                {
+                    issued = false;
+                    limitedRSCounter++;
+//                    System.out.println("LIMITED RS");
+                }
+                else {
+                    aluInstructionsCounter++;
 
-                reservationStations.aluReservationStation.add(current);
+                    reservationStations.aluReservationStation.add(current);
+                }
+
+
 
                 //pre reservation stations
 //                alu.instructionsBuffer.add(current);
@@ -50,9 +64,19 @@ public class DecodeUnit implements Unit {
             }
             else if (current.instructionUnit == "BranchUnit")
             {
-                controlInstructionsCounter++;
 
-                reservationStations.buReservationStation.add(current);
+                if (reservationStations.buReservationStation.size() > reservationStations.buRSLimit)
+                {
+                    issued = false;
+                    limitedRSCounter++;
+//                    System.out.println("LIMITED RS");
+                }
+                else {
+                    controlInstructionsCounter++;
+
+                    reservationStations.buReservationStation.add(current);
+                }
+
 
 //                System.out.println("decoder decoded a branch");
                 //pre reservation stations
@@ -60,24 +84,37 @@ public class DecodeUnit implements Unit {
             }
             else if (current.instructionUnit == "LoadStoreUnit")
             {
-                loadStoreInstructionsCounter++;
+                if (reservationStations.lsuReservationStation.size() > reservationStations.lsuRSLimit)
+                {
+                    issued = false;
+                    limitedRSCounter++;
+//                    System.out.println("LIMITED RS");
+                }
+                else {
+                    loadStoreInstructionsCounter++;
 
-                reservationStations.lsuReservationStation.add(current);
+                    reservationStations.lsuReservationStation.add(current);
+                }
+
 
 //                System.out.println("decoder decoded a branch");
                 //pre reservation stations
 //                loadStoreUnit.instructionsBuffer.add(current);
             }
 
-            //adding to ROB
-            instructionDestRegs = new ArrayList<>(current.destRegs);
+            if (issued)
+            {
+                //adding to ROB
+                instructionDestRegs = new ArrayList<>(current.destRegs);
 
-            rob.add(current, instructionDestRegs);
-            //
+                rob.add(current, instructionDestRegs);
+                //
 
-            current.decoded = true;
+                current.decoded = true;
 
-            instructions.remove(0);
+                instructions.remove(0);
+            }
+
         }
 
         for (Instruction instruction: instructionsBuffer)

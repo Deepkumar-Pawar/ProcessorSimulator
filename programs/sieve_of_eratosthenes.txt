@@ -5,7 +5,7 @@ main:
 
 
     # initialise n
-    li $0, 300              # Move input to $t0
+    li $0, 100              # Move input to $t0
 
     # Check if n < 2 (smallest prime is 2)
     # not really necessary

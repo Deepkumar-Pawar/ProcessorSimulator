@@ -6,7 +6,7 @@ public class Processor {
     public int programCounter = 0;
     public boolean initialised = false;
 
-    public int width = 5;
+    public int width = 4;
 
     public RegisterFile registerFile;
     public int memorySize = 1000;
@@ -16,7 +16,7 @@ public class Processor {
     public DecodeUnit decodeUnit;
 
     public int aluNum = 3;
-    public int buNum = 1;
+    public int buNum = 2;
     public int lsuNum = 2;
 
     public List<ArithmeticLogicUnit> alus;
@@ -186,10 +186,10 @@ public class Processor {
             if (i >= maxCycles)
                 running = false;
 
-//            if (cycles == 1000)
-//            {
-//                System.out.print("");   //Do nothing just for debugging to see what's up at arbitrary cycle number
-//            }
+            if (cycles == 2000)
+            {
+                System.out.print("");   //Do nothing just for debugging to see what's up at arbitrary cycle number
+            }
 
 //            System.out.println("A cycle occurred");
 
@@ -217,9 +217,16 @@ public class Processor {
             }
         }
 
+        //stats to print
+        System.out.println("Statistics:");
         System.out.println("cycles: " + cycles);
+        int instructionsNum = fetchUnit.instructionCounter;
+        System.out.println("number of instructions executed: " + instructionsNum);
+        double instructionsPerCycle = ((double) Math.round(((double) instructionsNum) / ((double) cycles) * 1000)) / 1000;
+        System.out.println("instructions per cycle: " + instructionsPerCycle);
 //        printProcessorState();
         System.out.println("program counter at end: " + programCounter);
+        System.out.println();
 
 //        printInstructions(decodeUnit.instructions);
 //        System.out.println(decodeUnit.instructions.isEmpty());
@@ -230,7 +237,12 @@ public class Processor {
 //        printInstructions(writeBackUnit.instructionsBuffer);
 
 
+
+
+
+
         printRegisterFile(registerFile);
+        System.out.println();
         printMemory(memory);
 
     }
@@ -349,41 +361,45 @@ public class Processor {
 
     public void printMemory(Memory memory)
     {
+
+        System.out.println("Main Memory (length = " + memorySize + " (configurable)):\nPairwise (index : value)");
         List<Integer> memoryItems = new ArrayList<>();
 
         int n = memory.size;
 
-        System.out.println();
+
 
         for (int i = 0; i < n; i++)
         {
             memoryItems.add(memory.load(i));
-            System.out.print("("+ Integer.toString(i) + ":" + memoryItems.get(i).toString() + ")");
-            if (i <= 300) {
-                if ((isPrime(i) && memoryItems.get(i) == 0) || (!isPrime(i) && memoryItems.get(i) == 1)) {
-                    System.out.println(i + "WRONG" + memoryItems.get(i));
-                }
-            }
+            System.out.print("("+ Integer.toString(i) + " : " + memoryItems.get(i).toString() + ")");
+//            if (i <= 300) {
+//                if ((isPrime(i) && memoryItems.get(i) == 0) || (!isPrime(i) && memoryItems.get(i) == 1)) {
+//                    System.out.println(i + "WRONG" + memoryItems.get(i));
+//                }
+//            }
 
         }
         System.out.println();
+        System.out.println("As a whole, sequentially:");
+
         System.out.println(memoryItems);
 
     }
 
-    boolean isPrime(int num)
-    {
-        if(num<=1)
-        {
-            return false;
-        }
-        for(int i=2;i<=num/2;i++)
-        {
-            if((num%i)==0)
-                return  false;
-        }
-        return true;
-    }
+//    boolean isPrime(int num)
+//    {
+//        if(num<=1)
+//        {
+//            return false;
+//        }
+//        for(int i=2;i<=num/2;i++)
+//        {
+//            if((num%i)==0)
+//                return  false;
+//        }
+//        return true;
+//    }
 
 
 }
