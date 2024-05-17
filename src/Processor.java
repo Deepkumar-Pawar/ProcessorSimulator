@@ -6,18 +6,29 @@ public class Processor {
     public int programCounter = 0;
     public boolean initialised = false;
 
+    public int width = 5;
+
     public RegisterFile registerFile;
     public int memorySize = 1000;
     public Memory memory;
 
     public FetchUnit fetchUnit;
     public DecodeUnit decodeUnit;
-    public ArithmeticLogicUnit alu;
-    public BranchUnit branchUnit;
-    public LoadStoreUnit loadStoreUnit;
+
+    public int aluNum = 3;
+    public int buNum = 1;
+    public int lsuNum = 2;
+
+    public List<ArithmeticLogicUnit> alus;
+    public List<BranchUnit> branchUnits;
+    public List<LoadStoreUnit> loadStoreUnits;
+//    public BranchUnit branchUnit;
+//    public LoadStoreUnit loadStoreUnit;
     public WriteBackUnit writeBackUnit;
 
     public CommitUnit commitUnit;
+
+    public List<List<Instruction>> instructionLocations;
 
     public ROB rob;
 
@@ -32,6 +43,8 @@ public class Processor {
         registerFile = new RegisterFile();
         memory = new Memory(memorySize);
 
+
+
 //        registerFile.registers.get(0).setValue(2);
 //        registerFile.registers.get(1).setValue(3);
 
@@ -41,21 +54,85 @@ public class Processor {
 
         fetchUnit = new FetchUnit();
         decodeUnit = new DecodeUnit();
-        alu = new ArithmeticLogicUnit();
-        branchUnit = new BranchUnit();
-        loadStoreUnit = new LoadStoreUnit();
+
+        alus = new ArrayList<>();
+        branchUnits = new ArrayList<>();
+        loadStoreUnits = new ArrayList<>();
+
+        for (int i = 0; i < aluNum; i++)
+        {
+            alus.add(new ArithmeticLogicUnit());
+        }
+
+        for (int i = 0; i < buNum; i++)
+        {
+            branchUnits.add(new BranchUnit());
+        }
+
+        for (int i = 0; i < lsuNum; i++)
+        {
+            loadStoreUnits.add(new LoadStoreUnit());
+        }
+
         writeBackUnit = new WriteBackUnit();
         commitUnit = new CommitUnit();
 
 
 
         fetchUnit.init(decodeUnit, registerFile);
-        decodeUnit.init(alu, branchUnit, loadStoreUnit, rob, reservationStations);
-        alu.init(registerFile, writeBackUnit, reservationStations, rob);
-        branchUnit.init(registerFile, fetchUnit, writeBackUnit, commitUnit, reservationStations, rob);
-        loadStoreUnit.init(registerFile, memory, writeBackUnit, commitUnit, rob, reservationStations);
+        decodeUnit.init(rob, reservationStations);
+
+        for (int i = 0; i < alus.size(); i++)
+        {
+            alus.get(i).init(registerFile, writeBackUnit, reservationStations, rob);
+        }
+
+        for (int i = 0; i < branchUnits.size(); i++)
+        {
+            branchUnits.get(i).init(registerFile, fetchUnit, writeBackUnit, commitUnit, reservationStations, rob);
+        }
+
+        for (int i = 0; i < loadStoreUnits.size(); i++)
+        {
+            loadStoreUnits.get(i).init(registerFile, memory, writeBackUnit, commitUnit, rob, reservationStations);
+        }
+
+
         writeBackUnit.init(registerFile, commitUnit, rob);
         commitUnit.init(rob, registerFile, memory);
+
+        instructionLocations = new ArrayList<>();
+        instructionLocations.add(decodeUnit.instructions);
+        instructionLocations.add(decodeUnit.instructionsBuffer);
+
+//        instructionLocations.add(alu1.instructions);
+//        instructionLocations.add(alu2.instructions);
+//        instructionLocations.add(alu3.instructions);
+
+        for (int i = 0; i < alus.size(); i++)
+        {
+            instructionLocations.add(alus.get(i).instructions);
+        }
+
+        for (int i = 0; i < branchUnits.size(); i++)
+        {
+            instructionLocations.add(branchUnits.get(i).instructions);
+        }
+
+        for (int i = 0; i < loadStoreUnits.size(); i++)
+        {
+            instructionLocations.add(loadStoreUnits.get(i).instructions);
+        }
+
+
+//        instructionLocations.add(branchUnit.instructions);
+//        instructionLocations.add(loadStoreUnit.instructions);
+        instructionLocations.add(writeBackUnit.instructions);
+        instructionLocations.add(writeBackUnit.instructionsBuffer);
+        instructionLocations.add(commitUnit.instructions);
+        instructionLocations.add(commitUnit.instructionsBuffer);
+
+
 
     }
 
@@ -118,12 +195,25 @@ public class Processor {
 
             if (programCounter > endOfProgram || fetchUnit.exited)
             {
-                if (decodeUnit.instructions.isEmpty() && alu.instructions.isEmpty() && loadStoreUnit.instructions.isEmpty() && branchUnit.instructions.isEmpty() && writeBackUnit.instructions.isEmpty() && commitUnit.instructions.isEmpty())
+                boolean allEmpty = true;
+
+                for (List<Instruction> instructionList : instructionLocations)
                 {
-                    if (decodeUnit.instructionsBuffer.isEmpty() && alu.instructionsBuffer.isEmpty() && loadStoreUnit.instructionsBuffer.isEmpty() && writeBackUnit.instructionsBuffer.isEmpty() && commitUnit.instructionsBuffer.isEmpty()) {
-                        running = false;
+                    if (!instructionList.isEmpty())
+                    {
+                        allEmpty = false;
                     }
                 }
+                if (allEmpty)
+                {
+                    running = false;
+                }
+//                if (decodeUnit.instructions.isEmpty() && alu.instructions.isEmpty() && loadStoreUnit.instructions.isEmpty() && branchUnit.instructions.isEmpty() && writeBackUnit.instructions.isEmpty() && commitUnit.instructions.isEmpty())
+//                {
+//                    if (decodeUnit.instructionsBuffer.isEmpty() && alu.instructionsBuffer.isEmpty() && loadStoreUnit.instructionsBuffer.isEmpty() && writeBackUnit.instructionsBuffer.isEmpty() && commitUnit.instructionsBuffer.isEmpty()) {
+//                        running = false;
+//                    }
+//                }
             }
         }
 
@@ -149,19 +239,44 @@ public class Processor {
     {
         //tick through each unit and let them "execute" their respective functions
 
-        programCounter = fetchUnit.fetch(programCounter);
 
-        decodeUnit.decode();
 
-        alu.execute();
 
-        programCounter = branchUnit.execute(programCounter);
 
-        loadStoreUnit.execute();;
+        for (int i = 0; i < width; i++)
+        {
+            programCounter = fetchUnit.fetch(programCounter);
+            decodeUnit.decode();
+        }
 
-        writeBackUnit.writeBack();
 
-        commitUnit.commit();
+
+        for (int i = 0; i < alus.size(); i++)
+        {
+            alus.get(i).execute();
+        }
+
+        for (int i = 0; i < branchUnits.size(); i++)
+        {
+            programCounter = branchUnits.get(i).execute(programCounter);
+        }
+
+        for (int i = 0; i < loadStoreUnits.size(); i++)
+        {
+            loadStoreUnits.get(i).execute();;
+        }
+
+
+
+
+        for (int i = 0; i < width; i++)
+        {
+            writeBackUnit.writeBack();
+
+            commitUnit.commit();
+        }
+
+
 
     }
 
@@ -211,16 +326,20 @@ public class Processor {
         System.out.println("\tInstructions: " + decodeUnit.instructions);
 
         System.out.println("ALU");
-        System.out.println("\tBuffer Instructions: " + alu.instructionsBuffer);
-        System.out.println("\tInstructions: " + alu.instructions);
-
-        System.out.println("BranchUnit");
-        System.out.println("\tBuffer Instructions: " + branchUnit.instructionsBuffer);
-        System.out.println("\tInstructions: " + branchUnit.instructions);
-
-        System.out.println("LoadStoreUnit");
-        System.out.println("\tBuffer Instructions: " + loadStoreUnit.instructionsBuffer);
-        System.out.println("\tInstructions: " + loadStoreUnit.instructions);
+//        System.out.println("\tBuffer Instructions: " + alu1.instructionsBuffer);
+//        System.out.println("\tInstructions: " + alu1.instructions);
+//        System.out.println("\tBuffer Instructions: " + alu2.instructionsBuffer);
+//        System.out.println("\tInstructions: " + alu2.instructions);
+//        System.out.println("\tBuffer Instructions: " + alu3.instructionsBuffer);
+//        System.out.println("\tInstructions: " + alu3.instructions);
+//
+//        System.out.println("BranchUnit");
+//        System.out.println("\tBuffer Instructions: " + branchUnit.instructionsBuffer);
+//        System.out.println("\tInstructions: " + branchUnit.instructions);
+//
+//        System.out.println("LoadStoreUnit");
+//        System.out.println("\tBuffer Instructions: " + loadStoreUnit.instructionsBuffer);
+//        System.out.println("\tInstructions: " + loadStoreUnit.instructions);
 
         System.out.println("WriteBackUnit");
         System.out.println("\tBuffer Instructions: " + writeBackUnit.instructionsBuffer);

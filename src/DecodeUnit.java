@@ -6,9 +6,9 @@ public class DecodeUnit implements Unit {
     public ArrayList<Instruction> instructionsBuffer;
     public ArrayList<Instruction> instructions;
 
-    public ArithmeticLogicUnit alu;
-    public BranchUnit branchUnit;
-    public LoadStoreUnit loadStoreUnit;
+//    public ArithmeticLogicUnit alu;
+//    public BranchUnit branchUnit;
+//    public LoadStoreUnit loadStoreUnit;
 
     public ROB rob;
 
@@ -93,11 +93,11 @@ public class DecodeUnit implements Unit {
 //        executionUnit.instructionsBuffer.add(instruction)
     }
 
-    public void init(ArithmeticLogicUnit alu, BranchUnit branchUnit, LoadStoreUnit loadStoreUnit, ROB rob, ReservationStations reservationStations)
+    public void init(ROB rob, ReservationStations reservationStations)
     {
-        this.alu = alu;
-        this.branchUnit = branchUnit;
-        this.loadStoreUnit = loadStoreUnit;
+//        this.alu = alu;
+//        this.branchUnit = branchUnit;
+//        this.loadStoreUnit = loadStoreUnit;
         this.rob = rob;
         this.reservationStations = reservationStations;
     }
