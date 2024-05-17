@@ -7,14 +7,35 @@ public class ROB {
 
     public void add(Instruction instruction, List<Integer> destRegs)
     {
-        robEntries.add(new ROBEntry(instruction, destRegs));
+        robEntries.addLast(new ROBEntry(instruction, destRegs));
     }
 
-    public void remove(Instruction instruction)
+    public ROBEntry head()
     {
-//        for (int i = 0; );
-//
-//        robEntries.
+        return robEntries.getFirst();
+    }
+
+    public void removeHead()
+    {
+        robEntries.removeFirst();
+    }
+
+//    public ROBEntry remove(Instruction instruction)
+//    {
+////        return robEntries.remove(find(instruction));
+//    }
+
+    public int find(Instruction instruction)
+    {
+        for (int i = 0; i < robEntries.size(); i++)
+        {
+            if (robEntries.get(i).instruction.id == instruction.id)
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
 }

@@ -7,13 +7,19 @@ public class CommitUnit {
 
     public ROB rob;
 
+    public RegisterFile registerFile;
 
-    public CommitUnit(ROB rob)
+    public Memory memory;
+
+
+    public CommitUnit(ROB rob, RegisterFile registerFile, Memory memory)
     {
         instructionsBuffer = new ArrayList<>();
         instructions = new ArrayList<>();
 
         this.rob = rob;
+        this.registerFile = registerFile;
+        this.memory = memory;
     }
 
 
@@ -23,7 +29,23 @@ public class CommitUnit {
         {
             Instruction current = instructions.get(0);
 
-            rob.remove(current);
+            ROBEntry robHead = rob.head();
+
+            if (canCommit(robHead.instruction.id))
+            {
+                // commit that instruction
+
+                if (robHead.changesMemory)
+                {
+                    memory.store(robHead.memoryAddress, robHead.data);
+                }
+                else if (robHead.changesRegistry)
+                {
+                    registerFile.registers.get(robHead.destReg).setValue(robHead.data);
+                }
+
+                rob.removeHead();
+            }
         }
 
         for (Instruction instruction: instructionsBuffer)
@@ -32,6 +54,20 @@ public class CommitUnit {
         }
 
         instructionsBuffer.clear();
+    }
+
+    public boolean canCommit(int robHeadId)
+    {
+        for (int i = 0; i < instructions.size(); i++)
+        {
+            if (instructions.get(i).id == robHeadId)
+            {
+                instructions.remove(i);
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
