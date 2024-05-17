@@ -5,6 +5,11 @@ public class ROB {
 
     LinkedList<ROBEntry> robEntries;
 
+    public ROB()
+    {
+        robEntries = new LinkedList<>();
+    }
+
     public void add(Instruction instruction, List<Integer> destRegs)
     {
         robEntries.addLast(new ROBEntry(instruction, destRegs));

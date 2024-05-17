@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class ControlInstruction extends Instruction{
     int op1;
     int op2;
@@ -21,6 +23,8 @@ public class ControlInstruction extends Instruction{
         this.cyclesToExecute = cyclesToExecute;
 
         instructionUnit = "BranchUnit";
+
+        this.destRegs = new ArrayList<>();
     }
 
     @Override

@@ -17,6 +17,8 @@ public class Processor {
     public LoadStoreUnit loadStoreUnit;
     public WriteBackUnit writeBackUnit;
 
+    public ROB rob;
+
     public boolean running = false;
 
     public void init()
@@ -36,7 +38,7 @@ public class Processor {
         loadStoreUnit = new LoadStoreUnit();
         writeBackUnit = new WriteBackUnit();
 
-        ROB rob = new ROB();
+        rob = new ROB();
 
         fetchUnit.init(decodeUnit, registerFile);
         decodeUnit.init(alu, branchUnit, loadStoreUnit, rob);
@@ -96,6 +98,11 @@ public class Processor {
 
             if (i >= maxCycles)
                 running = false;
+
+            if (cycles == 1000)
+            {
+                System.out.print("");   //Do nothing just for debugging to see what's up at arbitrary cycle number
+            }
 
 //            System.out.println("A cycle occurred");
 
