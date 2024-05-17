@@ -16,6 +16,8 @@ public abstract class Instruction {
 
     public abstract Instruction copyOf();
 
+    public List<Integer> opRegs;
+
     public List<Integer> destRegs;
 
     public void updateID(int id)

@@ -19,6 +19,13 @@ public class LoadStoreInstruction  extends Instruction{
 
         destRegs = new ArrayList<>();
         destRegs.add(dest);
+
+        opRegs = new ArrayList<>();
+
+        if (instructionType == "sw")
+        {
+            opRegs.add(op1);
+        }
     }
 
     @Override
@@ -30,6 +37,10 @@ public class LoadStoreInstruction  extends Instruction{
         copy.executed = this.executed;
         copy.writtenBack = this.writtenBack;
         copy.instructionUnit = this.instructionUnit;
+        copy.id = this.id;
+        copy.destRegs = new ArrayList<>(this.destRegs);
+        copy.opRegs = new ArrayList<>(this.opRegs);
+
 
         return copy;
     }

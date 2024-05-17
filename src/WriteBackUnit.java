@@ -8,6 +8,8 @@ public class WriteBackUnit implements  Unit {
 
     public CommitUnit commitUnit;
 
+    public ROB rob;
+
     public WriteBackUnit()
     {
         instructionsBuffer = new ArrayList<>();
@@ -23,8 +25,15 @@ public class WriteBackUnit implements  Unit {
             if (current.instructionUnit == "ALU")
             {
                 int destRegName = ((InstructionALU) current).destRegName;
+                int result = ((InstructionALU) current).result;
+
+                int instructionIndex = rob.find(current);
+
+                rob.robEntries.get(instructionIndex).setChangesRegistry(true).setDestReg(destRegName).setData(result);
+
 //                System.out.println(((InstructionALU) current).result);
-                registerFile.registers.get(destRegName).setValue(((InstructionALU) current).result);
+
+//                registerFile.registers.get(destRegName).setValue(((InstructionALU) current).result);
             }
 
             current.writtenBack = true;
@@ -44,9 +53,11 @@ public class WriteBackUnit implements  Unit {
         instructionsBuffer.clear();
     }
 
-    public void init(RegisterFile registerFile, CommitUnit commitUnit)
+    public void init(RegisterFile registerFile, CommitUnit commitUnit, ROB rob)
     {
         this.registerFile = registerFile;
         this.commitUnit = commitUnit;
+
+        this.rob = rob;
     }
 }

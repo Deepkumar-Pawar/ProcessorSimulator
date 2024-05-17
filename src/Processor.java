@@ -21,6 +21,8 @@ public class Processor {
 
     public ROB rob;
 
+    public ReservationStations reservationStations;
+
     public boolean running = false;
 
     public void init()
@@ -35,6 +37,8 @@ public class Processor {
 
         rob = new ROB();
 
+        reservationStations = new ReservationStations();
+
         fetchUnit = new FetchUnit();
         decodeUnit = new DecodeUnit();
         alu = new ArithmeticLogicUnit();
@@ -46,11 +50,11 @@ public class Processor {
 
 
         fetchUnit.init(decodeUnit, registerFile);
-        decodeUnit.init(alu, branchUnit, loadStoreUnit, rob);
-        alu.init(registerFile, writeBackUnit);
-        branchUnit.init(registerFile, fetchUnit, writeBackUnit, commitUnit);
-        loadStoreUnit.init(registerFile, memory, writeBackUnit, commitUnit);
-        writeBackUnit.init(registerFile, commitUnit);
+        decodeUnit.init(alu, branchUnit, loadStoreUnit, rob, reservationStations);
+        alu.init(registerFile, writeBackUnit, reservationStations, rob);
+        branchUnit.init(registerFile, fetchUnit, writeBackUnit, commitUnit, reservationStations, rob);
+        loadStoreUnit.init(registerFile, memory, writeBackUnit, commitUnit, rob, reservationStations);
+        writeBackUnit.init(registerFile, commitUnit, rob);
         commitUnit.init(rob, registerFile, memory);
 
     }

@@ -7,6 +7,8 @@ public class BranchUnit extends ExecutionUnit{
 
     public CommitUnit commitUnit;
 
+//    public ReservationStations reservationStations;
+
     public BranchUnit()
     {
         instructionsBuffer = new ArrayList<>();
@@ -156,13 +158,16 @@ public class BranchUnit extends ExecutionUnit{
             }
         }
 
-        //should place buffer instructions in the list of instructions to execute as the thing this unit does
-        for (Instruction instruction: instructionsBuffer)
-        {
-            instructions.add(instruction);
-        }
+        selectInstruction();
 
-        instructionsBuffer.clear();
+        //should place buffer instructions in the list of instructions to execute as the thing this unit does
+        // pre reservation stations
+//        for (Instruction instruction: instructionsBuffer)
+//        {
+//            instructions.add(instruction);
+//        }
+//
+//        instructionsBuffer.clear();
 
         return programCounter;
     }
@@ -250,12 +255,15 @@ public class BranchUnit extends ExecutionUnit{
         return taken;
     }
 
-    public void init (RegisterFile registerFile, FetchUnit fetchUnit, WriteBackUnit writeBackUnit, CommitUnit commitUnit)
+    public void init (RegisterFile registerFile, FetchUnit fetchUnit, WriteBackUnit writeBackUnit, CommitUnit commitUnit, ReservationStations reservationStations, ROB rob)
     {
         this.registerFile = registerFile;
         this.fetchUnit = fetchUnit;
         this.writeBackUnit = writeBackUnit;
         this.commitUnit = commitUnit;
+//        this.reservationStations = reservationStations;
+        reservationStation = reservationStations.buReservationStation;
+        this.rob = rob;
     }
 
 //    public boolean checkDataDependency(int opRegName)

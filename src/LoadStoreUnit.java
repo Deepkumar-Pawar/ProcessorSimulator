@@ -9,6 +9,10 @@ public class LoadStoreUnit extends ExecutionUnit {
 
     public CommitUnit commitUnit;
 
+//    public ROB rob;
+//
+//    public ReservationStations reservationStations;
+
     public LoadStoreUnit()
     {
         instructionsBuffer = new ArrayList<>();
@@ -52,7 +56,13 @@ public class LoadStoreUnit extends ExecutionUnit {
 
                     int loaded = lw(address);
 
-                    registerFile.registers.get(current.dest).setValue(loaded);
+                    //ROB - putting it in
+                    int instructionIndex = rob.find(current);
+
+                    rob.robEntries.get(instructionIndex).setChangesRegistry(true).setDestReg(current.dest).setData(loaded);
+
+                    //old before ROB
+//                    registerFile.registers.get(current.dest).setValue(loaded);
 
                     current.executed = true;
 
@@ -105,7 +115,14 @@ public class LoadStoreUnit extends ExecutionUnit {
                     int address = current.op2 + destVal;
                     int data = op1;
 
-                    sw(address, data);
+
+                    // ROB stuff
+                    int instructionIndex = rob.find(current);
+
+                    rob.robEntries.get(instructionIndex).setChangesMemory(true).setMemoryAddress(address).setData(data);
+
+                    // old before ROB
+//                    sw(address, data);
 
                     current.executed = true;
 
@@ -122,7 +139,14 @@ public class LoadStoreUnit extends ExecutionUnit {
                     return;
                 }
 
-                li(current.op1, current.dest);
+
+                // ROB stuff
+                int instructionIndex = rob.find(current);
+
+                rob.robEntries.get(instructionIndex).setChangesRegistry(true).setDestReg(current.dest).setData(current.op1);
+
+                // old before ROB
+//                li(current.op1, current.dest);
 
                 current.executed = true;
 
@@ -132,15 +156,16 @@ public class LoadStoreUnit extends ExecutionUnit {
             }
         }
 
-
+        selectInstruction();
 
         //should place buffer instructions in the list of instructions to execute as the thing this unit does
-        for (Instruction instruction: instructionsBuffer)
-        {
-            instructions.add(instruction);
-        }
-
-        instructionsBuffer.clear();
+        // pre reservation stations
+//        for (Instruction instruction: instructionsBuffer)
+//        {
+//            instructions.add(instruction);
+//        }
+//
+//        instructionsBuffer.clear();
     }
 
     public int lw(int address)
@@ -158,11 +183,15 @@ public class LoadStoreUnit extends ExecutionUnit {
         registerFile.registers.get(dest).setValue(op1);
     }
 
-    public void init (RegisterFile registerFile, Memory memory, WriteBackUnit writeBackUnit, CommitUnit commitUnit)
+    public void init (RegisterFile registerFile, Memory memory, WriteBackUnit writeBackUnit, CommitUnit commitUnit, ROB rob, ReservationStations reservationStations)
     {
         this.registerFile = registerFile;
         this.memory = memory;
         this.writeBackUnit = writeBackUnit;
         this.commitUnit = commitUnit;
+
+        this.rob = rob;
+//        this.reservationStations = reservationStations;
+        this.reservationStation = reservationStations.lsuReservationStation;
     }
 }

@@ -6,6 +6,7 @@ public class ROBEntry {
     public List<Integer> destinationRegisters;
 
     public boolean changesMemory;
+
     public boolean changesRegistry;
 
     public int memoryAddress;
@@ -20,6 +21,31 @@ public class ROBEntry {
 
         this.changesMemory = false;
         this.changesRegistry = false;
+    }
+
+    public ROBEntry setChangesMemory(boolean changesMemory) {
+        this.changesMemory = changesMemory;
+        return this;
+    }
+
+    public ROBEntry setChangesRegistry(boolean changesRegistry) {
+        this.changesRegistry = changesRegistry;
+        return this;
+    }
+
+    public ROBEntry setMemoryAddress(int memoryAddress) {
+        this.memoryAddress = memoryAddress;
+        return this;
+    }
+
+    public ROBEntry setDestReg(int destReg) {
+        this.destReg = destReg;
+        return this;
+    }
+
+    public ROBEntry setData(int data) {
+        this.data = data;
+        return this;
     }
 
 }

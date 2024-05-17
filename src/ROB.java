@@ -43,4 +43,24 @@ public class ROB {
         return -1;
     }
 
+    public boolean hasDataDependency(Instruction instruction)
+    {
+        boolean dataDependent = false;
+
+        int index = find(instruction);
+
+        for (int i = 0; i < index; i++)
+        {
+            for (int opReg : instruction.opRegs)
+            {
+                if (robEntries.get(i).destinationRegisters.contains(opReg))
+                {
+                    dataDependent = true;
+                }
+            }
+        }
+
+        return dataDependent;
+    }
+
 }

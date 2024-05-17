@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class ExecutionUnit implements Unit{
     ArrayList<Instruction> instructionsBuffer;
@@ -6,6 +7,29 @@ public class ExecutionUnit implements Unit{
     ArrayList<Instruction> instructions;
 
     ArrayList<Register> resultForwardingRegisters;
+
+    ROB rob;
+    List<Instruction> reservationStation;
+
+    public void selectInstruction()
+    {
+        for (int i = 0; i < reservationStation.size(); i++)
+        {
+            Instruction current = reservationStation.get(i);
+
+            //check ROB
+
+            rob.hasDataDependency(current);
+
+            boolean retrievable = !rob.hasDataDependency(current);
+
+            if (retrievable)
+            {
+                instructions.add(current);
+                reservationStation.remove(i);
+            }
+        }
+    }
 
     public int checkForwardedResultRegisters(int regName)
     {

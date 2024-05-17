@@ -38,14 +38,14 @@ public class CommitUnit {
             {
                 // commit that instruction
 
-//                if (robHead.changesMemory)
-//                {
-//                    memory.store(robHead.memoryAddress, robHead.data);
-//                }
-//                else if (robHead.changesRegistry)
-//                {
-//                    registerFile.registers.get(robHead.destReg).setValue(robHead.data);
-//                }
+                if (robHead.changesMemory)
+                {
+                    memory.store(robHead.memoryAddress, robHead.data);
+                }
+                else if (robHead.changesRegistry)
+                {
+                    registerFile.registers.get(robHead.destReg).setValue(robHead.data);
+                }
 
                 rob.removeHead();
             }

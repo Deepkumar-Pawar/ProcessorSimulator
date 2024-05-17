@@ -25,6 +25,14 @@ public class ControlInstruction extends Instruction{
         instructionUnit = "BranchUnit";
 
         this.destRegs = new ArrayList<>();
+        this.opRegs = new ArrayList<>();
+
+        if (!isJumpInstruction)
+        {
+            opRegs.add(op1);
+            opRegs.add(op2);
+        }
+
     }
 
     @Override
@@ -37,6 +45,9 @@ public class ControlInstruction extends Instruction{
         copy.writtenBack = this.writtenBack;
         copy.instructionUnit = this.instructionUnit;
         copy.targetProgramCounter = this.targetProgramCounter;
+        copy.id = this.id;
+        copy.destRegs = new ArrayList<>(this.destRegs);
+        copy.opRegs = new ArrayList<>(this.opRegs);
 
         return copy;
     }

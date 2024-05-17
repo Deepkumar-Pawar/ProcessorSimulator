@@ -21,6 +21,15 @@ public class InstructionALU extends Instruction {
 
         destRegs = new ArrayList<>();
         destRegs.add(destRN);
+
+        opRegs = new ArrayList<>();
+        opRegs.add(op1);
+
+        if (instructionType != "addi")
+        {
+            opRegs.add(op2);
+        }
+
     }
 
     @Override
@@ -33,6 +42,10 @@ public class InstructionALU extends Instruction {
         copy.executed = this.executed;
         copy.writtenBack = this.writtenBack;
         copy.instructionUnit = this.instructionUnit;
+        copy.id = this.id;
+        copy.destRegs = new ArrayList<>(this.destRegs);
+        copy.opRegs = new ArrayList<>(this.opRegs);
+
 
         return copy;
     }

@@ -12,6 +12,8 @@ public class DecodeUnit implements Unit {
 
     public ROB rob;
 
+    public ReservationStations reservationStations;
+
     public int aluInstructionsCounter = 0;
     public int controlInstructionsCounter = 0;
     public int loadStoreInstructionsCounter = 0;
@@ -38,7 +40,11 @@ public class DecodeUnit implements Unit {
             {
                 aluInstructionsCounter++;
 
-                alu.instructionsBuffer.add(current);
+                reservationStations.aluReservationStation.add(current);
+
+                //pre reservation stations
+//                alu.instructionsBuffer.add(current);
+
 //                System.out.println("decoder decoded an alu instruction");
 
             }
@@ -46,15 +52,21 @@ public class DecodeUnit implements Unit {
             {
                 controlInstructionsCounter++;
 
+                reservationStations.buReservationStation.add(current);
+
 //                System.out.println("decoder decoded a branch");
-                branchUnit.instructionsBuffer.add(current);
+                //pre reservation stations
+//                branchUnit.instructionsBuffer.add(current);
             }
             else if (current.instructionUnit == "LoadStoreUnit")
             {
                 loadStoreInstructionsCounter++;
 
+                reservationStations.lsuReservationStation.add(current);
+
 //                System.out.println("decoder decoded a branch");
-                loadStoreUnit.instructionsBuffer.add(current);
+                //pre reservation stations
+//                loadStoreUnit.instructionsBuffer.add(current);
             }
 
             //adding to ROB
@@ -76,12 +88,17 @@ public class DecodeUnit implements Unit {
         instructionsBuffer.clear();
     }
 
-    public void init(ArithmeticLogicUnit alu, BranchUnit branchUnit, LoadStoreUnit loadStoreUnit, ROB rob)
+    public void issue(ExecutionUnit executionUnit, Instruction instruction)
+    {
+//        executionUnit.instructionsBuffer.add(instruction)
+    }
+
+    public void init(ArithmeticLogicUnit alu, BranchUnit branchUnit, LoadStoreUnit loadStoreUnit, ROB rob, ReservationStations reservationStations)
     {
         this.alu = alu;
         this.branchUnit = branchUnit;
         this.loadStoreUnit = loadStoreUnit;
         this.rob = rob;
-
+        this.reservationStations = reservationStations;
     }
 }

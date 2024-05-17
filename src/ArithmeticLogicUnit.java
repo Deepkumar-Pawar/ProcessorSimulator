@@ -5,6 +5,9 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
     public RegisterFile registerFile;
     public WriteBackUnit writeBackUnit;
 
+//    public ReservationStations reservationStations;
+//    public ROB rob;
+
     public ArithmeticLogicUnit()
     {
         instructionsBuffer = new ArrayList<>();
@@ -265,16 +268,37 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
             }
         }
 
-
+        selectInstruction();
 
         //should place buffer instructions in the list of instructions to execute as the thing this unit does
-        for (Instruction instruction: instructionsBuffer)
-        {
-            instructions.add(instruction);
-        }
-
-        instructionsBuffer.clear();
+        //pre reservation stations
+//        for (Instruction instruction: instructionsBuffer)
+//        {
+//            instructions.add(instruction);
+//        }
+//
+//        instructionsBuffer.clear();
     }
+
+//    public void selectInstruction()
+//    {
+//        for (int i = 0; i < reservationStations.aluReservationStation.size(); i++)
+//        {
+//            Instruction current = reservationStations.aluReservationStation.get(i);
+//
+//            //check ROB
+//
+//            rob.hasDataDependency(current);
+//
+//            boolean retrievable = !rob.hasDataDependency(current);
+//
+//            if (retrievable)
+//            {
+//                instructions.add(current);
+//                reservationStations.aluReservationStation.remove(i);
+//            }
+//        }
+//    }
 
     public int add(int op1, int op2)
     {
@@ -318,10 +342,12 @@ public class ArithmeticLogicUnit extends ExecutionUnit {
         return result;
     }
 
-    public void init (RegisterFile registerFile, WriteBackUnit writeBackUnit)
+    public void init (RegisterFile registerFile, WriteBackUnit writeBackUnit, ReservationStations reservationStations, ROB rob)
     {
         this.registerFile = registerFile;
         this.writeBackUnit = writeBackUnit;
+        this.reservationStation = reservationStations.aluReservationStation;
+        this.rob = rob;
     }
 
 //    public boolean checkDataDependency(int opRegName)
