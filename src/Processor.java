@@ -9,7 +9,7 @@ public class Processor {
     public int width = 4;
 
     public RegisterFile registerFile;
-    public int memorySize = 1000;
+    public int memorySize = 500;
     public Memory memory;
 
     public FetchUnit fetchUnit;
@@ -371,8 +371,12 @@ public class Processor {
 
         for (int i = 0; i < n; i++)
         {
+            if (i > 100)
+            {
+                break;
+            }
             memoryItems.add(memory.load(i));
-            System.out.print("("+ Integer.toString(i) + " : " + memoryItems.get(i).toString() + ")");
+            System.out.print("("+ Integer.toString(i) + ":" + memoryItems.get(i).toString() + ")");
 //            if (i <= 300) {
 //                if ((isPrime(i) && memoryItems.get(i) == 0) || (!isPrime(i) && memoryItems.get(i) == 1)) {
 //                    System.out.println(i + "WRONG" + memoryItems.get(i));
