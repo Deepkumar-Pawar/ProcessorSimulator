@@ -12,11 +12,14 @@ public class CommitUnit {
     public Memory memory;
 
 
-    public CommitUnit(ROB rob, RegisterFile registerFile, Memory memory)
+    public CommitUnit()
     {
         instructionsBuffer = new ArrayList<>();
         instructions = new ArrayList<>();
+    }
 
+    public void init(ROB rob, RegisterFile registerFile, Memory memory)
+    {
         this.rob = rob;
         this.registerFile = registerFile;
         this.memory = memory;
@@ -35,14 +38,14 @@ public class CommitUnit {
             {
                 // commit that instruction
 
-                if (robHead.changesMemory)
-                {
-                    memory.store(robHead.memoryAddress, robHead.data);
-                }
-                else if (robHead.changesRegistry)
-                {
-                    registerFile.registers.get(robHead.destReg).setValue(robHead.data);
-                }
+//                if (robHead.changesMemory)
+//                {
+//                    memory.store(robHead.memoryAddress, robHead.data);
+//                }
+//                else if (robHead.changesRegistry)
+//                {
+//                    registerFile.registers.get(robHead.destReg).setValue(robHead.data);
+//                }
 
                 rob.removeHead();
             }

@@ -5,6 +5,8 @@ public class BranchUnit extends ExecutionUnit{
     public WriteBackUnit writeBackUnit;
     public FetchUnit fetchUnit;
 
+    public CommitUnit commitUnit;
+
     public BranchUnit()
     {
         instructionsBuffer = new ArrayList<>();
@@ -187,6 +189,8 @@ public class BranchUnit extends ExecutionUnit{
             programCounter++;
         }
 
+        commitUnit.instructionsBuffer.add(current);
+
         instructions.remove(0);
 
         return programCounter;
@@ -246,11 +250,12 @@ public class BranchUnit extends ExecutionUnit{
         return taken;
     }
 
-    public void init (RegisterFile registerFile, FetchUnit fetchUnit, WriteBackUnit writeBackUnit)
+    public void init (RegisterFile registerFile, FetchUnit fetchUnit, WriteBackUnit writeBackUnit, CommitUnit commitUnit)
     {
         this.registerFile = registerFile;
         this.fetchUnit = fetchUnit;
         this.writeBackUnit = writeBackUnit;
+        this.commitUnit = commitUnit;
     }
 
 //    public boolean checkDataDependency(int opRegName)

@@ -7,6 +7,8 @@ public class LoadStoreUnit extends ExecutionUnit {
 
     public WriteBackUnit writeBackUnit;
 
+    public CommitUnit commitUnit;
+
     public LoadStoreUnit()
     {
         instructionsBuffer = new ArrayList<>();
@@ -56,6 +58,8 @@ public class LoadStoreUnit extends ExecutionUnit {
 
                     cleanForwardedResultRegisters(current.op1);
                     cleanForwardedResultRegisters(current.dest);
+
+                    commitUnit.instructionsBuffer.add(current);
 
                     instructions.remove(0);
                 }
@@ -108,6 +112,8 @@ public class LoadStoreUnit extends ExecutionUnit {
                     cleanForwardedResultRegisters(current.op1);
                     cleanForwardedResultRegisters(current.dest);
 
+                    commitUnit.instructionsBuffer.add(current);
+
                     instructions.remove(0);
                 }
             } else if (current.instructionType == "li") {
@@ -119,6 +125,8 @@ public class LoadStoreUnit extends ExecutionUnit {
                 li(current.op1, current.dest);
 
                 current.executed = true;
+
+                commitUnit.instructionsBuffer.add(current);
 
                 instructions.remove(0);
             }
@@ -150,10 +158,11 @@ public class LoadStoreUnit extends ExecutionUnit {
         registerFile.registers.get(dest).setValue(op1);
     }
 
-    public void init (RegisterFile registerFile, Memory memory, WriteBackUnit writeBackUnit)
+    public void init (RegisterFile registerFile, Memory memory, WriteBackUnit writeBackUnit, CommitUnit commitUnit)
     {
         this.registerFile = registerFile;
         this.memory = memory;
         this.writeBackUnit = writeBackUnit;
+        this.commitUnit = commitUnit;
     }
 }

@@ -6,6 +6,8 @@ public class WriteBackUnit implements  Unit {
 
     public RegisterFile registerFile;
 
+    public CommitUnit commitUnit;
+
     public WriteBackUnit()
     {
         instructionsBuffer = new ArrayList<>();
@@ -28,6 +30,8 @@ public class WriteBackUnit implements  Unit {
             current.writtenBack = true;
             current.retired = true;
 
+            commitUnit.instructionsBuffer.add(current);
+
             instructions.remove(0);
 
         }
@@ -40,8 +44,9 @@ public class WriteBackUnit implements  Unit {
         instructionsBuffer.clear();
     }
 
-    public void init(RegisterFile registerFile)
+    public void init(RegisterFile registerFile, CommitUnit commitUnit)
     {
         this.registerFile = registerFile;
+        this.commitUnit = commitUnit;
     }
 }

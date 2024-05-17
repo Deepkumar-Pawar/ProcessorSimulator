@@ -12,6 +12,10 @@ public class DecodeUnit implements Unit {
 
     public ROB rob;
 
+    public int aluInstructionsCounter = 0;
+    public int controlInstructionsCounter = 0;
+    public int loadStoreInstructionsCounter = 0;
+
     public DecodeUnit()
     {
         instructionsBuffer = new ArrayList<>();
@@ -32,17 +36,23 @@ public class DecodeUnit implements Unit {
 
             if(current.instructionUnit == "ALU")
             {
+                aluInstructionsCounter++;
+
                 alu.instructionsBuffer.add(current);
 //                System.out.println("decoder decoded an alu instruction");
 
             }
             else if (current.instructionUnit == "BranchUnit")
             {
+                controlInstructionsCounter++;
+
 //                System.out.println("decoder decoded a branch");
                 branchUnit.instructionsBuffer.add(current);
             }
             else if (current.instructionUnit == "LoadStoreUnit")
             {
+                loadStoreInstructionsCounter++;
+
 //                System.out.println("decoder decoded a branch");
                 loadStoreUnit.instructionsBuffer.add(current);
             }

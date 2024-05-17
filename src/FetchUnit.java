@@ -15,6 +15,8 @@ public class FetchUnit implements Unit {
 
     public boolean exited;
 
+    public int jumpInstructionsCounter = 0;
+
     public int instructionCounter;
 
     public int fetch(int programCounter)
@@ -36,6 +38,8 @@ public class FetchUnit implements Unit {
         {
             if (((ControlInstruction) fetched).isJumpInstruction)
             {
+
+                jumpInstructionsCounter++;
 
                 if (ExecutionUnit.executeCycle(fetched))
                 {

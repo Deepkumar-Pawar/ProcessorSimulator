@@ -17,6 +17,8 @@ public class Processor {
     public LoadStoreUnit loadStoreUnit;
     public WriteBackUnit writeBackUnit;
 
+    public CommitUnit commitUnit;
+
     public ROB rob;
 
     public boolean running = false;
@@ -31,21 +33,25 @@ public class Processor {
 //        registerFile.registers.get(0).setValue(2);
 //        registerFile.registers.get(1).setValue(3);
 
+        rob = new ROB();
+
         fetchUnit = new FetchUnit();
         decodeUnit = new DecodeUnit();
         alu = new ArithmeticLogicUnit();
         branchUnit = new BranchUnit();
         loadStoreUnit = new LoadStoreUnit();
         writeBackUnit = new WriteBackUnit();
+        commitUnit = new CommitUnit();
 
-        rob = new ROB();
+
 
         fetchUnit.init(decodeUnit, registerFile);
         decodeUnit.init(alu, branchUnit, loadStoreUnit, rob);
         alu.init(registerFile, writeBackUnit);
-        branchUnit.init(registerFile, fetchUnit, writeBackUnit);
-        loadStoreUnit.init(registerFile, memory, writeBackUnit);
-        writeBackUnit.init(registerFile);
+        branchUnit.init(registerFile, fetchUnit, writeBackUnit, commitUnit);
+        loadStoreUnit.init(registerFile, memory, writeBackUnit, commitUnit);
+        writeBackUnit.init(registerFile, commitUnit);
+        commitUnit.init(rob, registerFile, memory);
 
     }
 
@@ -99,18 +105,18 @@ public class Processor {
             if (i >= maxCycles)
                 running = false;
 
-            if (cycles == 1000)
-            {
-                System.out.print("");   //Do nothing just for debugging to see what's up at arbitrary cycle number
-            }
+//            if (cycles == 1000)
+//            {
+//                System.out.print("");   //Do nothing just for debugging to see what's up at arbitrary cycle number
+//            }
 
 //            System.out.println("A cycle occurred");
 
             if (programCounter > endOfProgram || fetchUnit.exited)
             {
-                if (decodeUnit.instructions.isEmpty() && alu.instructions.isEmpty() && loadStoreUnit.instructions.isEmpty() && branchUnit.instructions.isEmpty() && writeBackUnit.instructions.isEmpty())
+                if (decodeUnit.instructions.isEmpty() && alu.instructions.isEmpty() && loadStoreUnit.instructions.isEmpty() && branchUnit.instructions.isEmpty() && writeBackUnit.instructions.isEmpty() && commitUnit.instructions.isEmpty())
                 {
-                    if (decodeUnit.instructionsBuffer.isEmpty() && alu.instructionsBuffer.isEmpty() && loadStoreUnit.instructionsBuffer.isEmpty() && writeBackUnit.instructionsBuffer.isEmpty()) {
+                    if (decodeUnit.instructionsBuffer.isEmpty() && alu.instructionsBuffer.isEmpty() && loadStoreUnit.instructionsBuffer.isEmpty() && writeBackUnit.instructionsBuffer.isEmpty() && commitUnit.instructionsBuffer.isEmpty()) {
                         running = false;
                     }
                 }
@@ -150,6 +156,8 @@ public class Processor {
         loadStoreUnit.execute();;
 
         writeBackUnit.writeBack();
+
+        commitUnit.commit();
 
     }
 
