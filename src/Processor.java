@@ -6,7 +6,7 @@ public class Processor {
     public int programCounter = 0;
     public boolean initialised = false;
 
-    public int width = 4;
+    public int width = 6;
 
     public RegisterFile registerFile;
     public int memorySize = 500;
@@ -27,6 +27,8 @@ public class Processor {
     public WriteBackUnit writeBackUnit;
 
     public CommitUnit commitUnit;
+
+    public BranchPredictor branchPredictor;
 
     public List<List<Instruction>> instructionLocations;
 
@@ -49,6 +51,8 @@ public class Processor {
 //        registerFile.registers.get(1).setValue(3);
 
         rob = new ROB();
+
+        branchPredictor = new BranchPredictor();
 
         reservationStations = new ReservationStations();
 
@@ -79,7 +83,7 @@ public class Processor {
 
 
 
-        fetchUnit.init(decodeUnit, registerFile);
+        fetchUnit.init(decodeUnit, registerFile, branchPredictor);
         decodeUnit.init(rob, reservationStations);
 
         for (int i = 0; i < alus.size(); i++)
@@ -241,9 +245,9 @@ public class Processor {
 
 
 
-        printRegisterFile(registerFile);
-        System.out.println();
-        printMemory(memory);
+//        printRegisterFile(registerFile);
+//        System.out.println();
+//        printMemory(memory);
 
     }
 

@@ -9,6 +9,8 @@ public class ControlInstruction extends Instruction{
 
     boolean taken;
 
+    boolean predictedTaken;
+
     boolean isJumpInstruction;
 
     String instructionType;
@@ -48,6 +50,8 @@ public class ControlInstruction extends Instruction{
         copy.id = this.id;
         copy.destRegs = new ArrayList<>(this.destRegs);
         copy.opRegs = new ArrayList<>(this.opRegs);
+        copy.taken = this.taken;
+        copy.predictedTaken = this.predictedTaken;
 
         return copy;
     }

@@ -7,6 +7,8 @@ public class FetchUnit implements Unit {
 
     public boolean branchStall = false;
 
+    public BranchPredictor branchPredictor;
+
 //    public int programCounter;
 
     public DecodeUnit decodeUnit;
@@ -51,6 +53,10 @@ public class FetchUnit implements Unit {
             }
             else
             {
+
+//                ((ControlInstruction) fetched).predictedTaken = branchPredictor.predictBranch();
+
+
                 branchStall = true;
             }
         }
@@ -65,10 +71,11 @@ public class FetchUnit implements Unit {
         //maybe add a small decoder that checks if this is a branch and updates program counter accordingly
     }
 
-    public void init(DecodeUnit decodeUnit, RegisterFile registerFile)
+    public void init(DecodeUnit decodeUnit, RegisterFile registerFile, BranchPredictor branchPredictor)
     {
         this.decodeUnit = decodeUnit;
         this.registerFile = registerFile;
+        this.branchPredictor = branchPredictor;
         exited = false;
 //        this.instructions = new ArrayList<>();
     }

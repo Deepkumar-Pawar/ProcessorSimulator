@@ -3,9 +3,9 @@ import java.util.List;
 
 public class ReservationStations {
 
-    public int aluRSLimit = 3;
-    public int buRSLimit = 3;
-    public int lsuRSLimit = 3;
+    public int aluRSLimit = 8;
+    public int buRSLimit = 8;
+    public int lsuRSLimit = 8;
 
     public List<Instruction> aluReservationStation;
 
